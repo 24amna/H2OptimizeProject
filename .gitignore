@@ -1,0 +1,10 @@
+# Python files
+__pycache__/
+*.pyc
+
+# Ignore sensitive files
+h2optimize-firebase-adminsdk.json
+
+# Ignore virtual environment
+venv/
+
