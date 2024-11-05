@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>H2Optimize</title>
+    <link rel="icon" type="image/png" href="static/images/logo-removebg.png">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #eef3fa;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #fff;
+        }
+
+        .container {
+            width: 500px;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .signup-form {
+            text-align: center;
+        }
+
+        .signup-form h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            float: left;
+            font-weight: bold;
+            margin-left: 3px;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"] {
+            width: calc(100% - 20px);
+            padding: 12px 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        .eye-icon {
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            transform: translateY(-50%);
+            cursor: pointer;
+            margin-top:10px;
+        }
+
+        button {
+            background-color: #526bfc;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            padding: 12px 20px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #d73a23;
+        }
+
+        p {
+            margin-top: 15px;
+            color: #333;
+        }
+
+        a {
+            color: #0f54bb;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+        .popup {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .popup-content {
+            background-color: #fefefe;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 300px;
+            text-align: center;
+            border-radius: 10px;
+            position: relative;
+        }
+
+        .close-popup {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .popup-content button {
+            background-color: #526bfc;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 20px;
+        }
+
+        .popup-content button:hover {
+            background-color: #0f998d;
+        }
+    </style>
+    <!-- Firebase App (the core Firebase SDK) is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+</head>
+<body>
+    <div class="container">
+        <form class="signup-form" onsubmit="signUp(event)">
+            <h2>Sign Up</h2>
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="signUpName" name="username" placeholder="Enter your username" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="signUpEmail" name="email" placeholder="Enter your email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="signUpPassword" name="password" placeholder="Enter your password" required>
+                <span class="eye-icon" onclick="togglePasswordVisibility()">🔐</span>
+            </div>
+            <div class="form-group">
+                <button type="submit">Sign Up</button>
+            </div>
+            <p>After Signing Up Successfully! Sign-in to your Account</p>
+        </form>
+
+        <div id="popup" class="popup">
+            <div class="popup-content">
+                <span class="close-popup" onclick="closePopup()">&times;</span>
+                <p id="popup-message"></p>
+                <button onclick="closePopup()">OK</button>
+            </div>
+        </div>
+
+    </div>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyAJuqq_PNBiWO9BctboH_-wgu8lCPjErOs",
+            authDomain: "h2optimize-3b6cd.firebaseapp.com",
+            databaseURL: "https://h2optimize-3b6cd-default-rtdb.asia-southeast1.firebasedatabase.app/",
+            projectId: "h2optimize-3b6cd",
+            storageBucket: "h2optimize-3b6cd.appspot.com",
+            messagingSenderId: "819813733292",
+            appId: "1:819813733292:web:6cd66fa7704679a71ae009",
+            measurementId: "G-YK72N2GMMF"
+        };
+        firebase.initializeApp(firebaseConfig);
+
+        function togglePasswordVisibility() {
+            const passwordInput = document.getElementById('signUpPassword');
+            const eyeIcon = document.querySelector('.eye-icon');
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                eyeIcon.textContent = '🔓';
+            } else {
+                passwordInput.type = 'password';
+                eyeIcon.textContent = '🔐';
+            }
+        }
+
+        function signUp(event) {
+            event.preventDefault();
+            const name = document.getElementById('signUpName').value;
+            const email = document.getElementById('signUpEmail').value;
+            const password = document.getElementById('signUpPassword').value;
+
+            if (!email.endsWith('@gmail.com')) {
+                displayPopup('Please use a @gmail.com email address.');
+                return;
+            }
+
+            firebase.auth().createUserWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    const user = userCredential.user;
+                    const db = firebase.database();
+                    return db.ref('users/' + user.uid).set({
+                        name: name,
+                        email: email,
+                        password: password,
+                    });
+                })
+                .then(() => {
+                    displayPopup('Sign-up successful!');
+                    setTimeout(() => {
+                        window.location.href = '/signin';
+                    }, 1000); // Redirect after 1 seconds
+                })
+                .catch((error) => {
+                    displayPopup(error.message);
+                });
+        }
+        function displayPopup(message) {
+            const popup = document.getElementById('popup');
+            const popupMessage = document.getElementById('popup-message');
+            popupMessage.textContent = message;
+            popup.style.display = 'flex';
+        }
+
+        function closePopup() {
+            const popup = document.getElementById('popup');
+            popup.style.display = 'none';
+        }
+
+    </script>
+</body>
+</html>

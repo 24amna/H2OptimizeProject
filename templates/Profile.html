@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>H2Optimize - Profile</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="icon" type="image/png" href="static/images/logo-removebg.png">
+    <style>
+        body {
+            background-color: #eef3fa;
+            font-family: Arial, sans-serif;
+            margin-bottom: 50px;
+        }
+        .container {
+            margin-top: 50px;
+        }
+        .card {
+            width: 70%;
+            margin: 0 auto;
+            padding: 40px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-bottom:10px;
+        }
+        .profile-image {
+            text-align: center;
+        }
+        .profile-image img {
+            border-radius: 50%;
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+        }
+        .input-container {
+            margin-top: 20px;
+        }
+        .updateButton {
+            width: 100%;
+            background: #0f54bb;
+            background: -webkit-linear-gradient(to right, #71adfc, #0f54bb);
+            background: linear-gradient(to right, #71adfc, #0f54bb);
+            border: #0f54bb;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left:305px;
+        }
+        .edit-mode {
+            display: none;
+
+        }
+        .edit-mode.active {
+            display: block;
+        }
+        .profile {
+            color: black;
+        }
+        .editProfile {
+            background: -webkit-linear-gradient(to right, #71adfc, #0f54bb);
+            background: linear-gradient(to right, #71adfc, #0f54bb);
+            border: #0f54bb;
+            cursor: pointer;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            margin-left:305px;
+        }
+        .edit-mode button{
+        margin-left:305px;
+        background: -webkit-linear-gradient(to right, #71adfc, #0f54bb);
+        background: linear-gradient(to right, #71adfc, #0f54bb);
+        border: #0f54bb;
+
+        }
+        .edit-mode input{
+        margin-bottom:20px;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="profile-image">
+                <img id="profileImage" src="static/images/profile.webp" alt="Profile Picture">
+                <p class="Profile">Profile Picture</p>
+            </div>
+            <div class="profile-info">
+                <button class="editProfile" onclick="fetchUserData();">Edit Profile</button>
+                <form class="edit-mode">
+                    <label class="edit-label">Change Full Name:</label>
+                    <input type="text" class="form-control" id="editName">
+                    <label class="edit-label">Change Password:</label>
+                    <input type="password" class="form-control" id="editPassword">
+                    <label class="edit-label">Change Email:</label>
+                    <input type="email" class="form-control" id="editEmail">
+                    <button type="button" class="btn btn-primary mt-3" onclick="updateProfile()">Update</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Fetch user data and populate fields
+        document.addEventListener("DOMContentLoaded", function() {
+            fetchUserData();
+
+            const editProfileBtn = document.querySelector('.editProfile');
+            const editModeForm = document.querySelector('.edit-mode');
+
+            editProfileBtn.addEventListener('click', function() {
+                editModeForm.style.display = editModeForm.style.display === 'none' ? 'block' : 'none';
+                fetchUserData();
+            });
+        });
+
+        function fetchUserData() {
+            fetch('/get_user_data')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('name').textContent = data.name || 'User Name';
+                    document.getElementById('editName').value = data.name || ''; // Default to empty string
+                    document.getElementById('editEmail').value = data.email || ''; // Default to empty string
+                    document.getElementById('editPassword').value = data.password || '';
+                })
+                .catch(error => console.error('Error fetching user data:', error));
+        }
+
+        function updateProfile() {
+            const name = document.getElementById('editName').value;
+            const password = document.getElementById('editPassword').value;
+            const email = document.getElementById('editEmail').value;
+
+            fetch('/update_profile', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ name, password, email })
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('Profile updated successfully!');
+                    fetchUserData();  // Refresh user data
+                } else {
+                    alert('Failed to update profile');
+                }
+            })
+            .catch(error => console.error('Error updating profile:', error));
+        }
+    </script>
+</body>
+</html>

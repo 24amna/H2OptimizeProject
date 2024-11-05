@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="icon" type="image/png" href="static/images/logo-removebg.png">
+    <title>H2Optimize</title>
+    <style>
+        /* Your existing styles */
+        body {
+            background-color: #F2F2F2;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .header {
+            color: #4A90E2;
+            padding: 10px 0;
+            text-align: center;
+            position: relative;
+        }
+
+        .navbar {
+            background-color: #50E3C2;
+            border-radius: 20px;
+            margin: 20px;
+            overflow: hidden;
+        }
+
+        .navbar a {
+            float: left;
+            color: #333333;
+            text-align: center;
+            padding: 14px 20px;
+            text-decoration: none;
+        }
+
+        .navbar a:hover {
+            background-color: #4A90E2;
+        }
+
+        .headerImg {
+            width: 1300px;
+            height: 300px;
+            margin: 20px;
+            border-radius: 20px;
+        }
+
+        .logo {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .logImg {
+            border-radius: 50%;
+            width: 100px;
+            height: 100px;
+            border: 5px solid #F2F2F2;
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .card {
+            background-color: #50E3C2;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin: 20px;
+            width: 350px;
+            height: 200px;
+            cursor: pointer;
+            margin-bottom: 200px;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card h2 {
+            margin-bottom: 10px;
+            color: #4A90E2;
+        }
+
+        .card p {
+            margin: 0;
+            color: #333333;
+        }
+
+        .button {
+            background-color: #4A90E2;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+
+        .button:hover {
+            background-color: #F5A623;
+        }
+
+        .footer {
+            background-color: #50E3C2;
+            color: #FFFFFF;
+            padding: 10px 0;
+            text-align: center;
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            margin-bottom: 0;
+        }
+
+        .main {
+            font-size: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #333333;
+        }
+
+        .profile {
+            float: right;
+            margin-top: 10px;
+            max-width: 30px;
+            max-height: 30px;
+            border: 2px solid #4A90E2;
+            border-radius: 20px;
+            margin-right: 10px;
+        }
+
+        .img1 {
+            width: 500px;
+            height: 300px;
+            margin-right: 20px;
+            margin-left: 10px;
+            border-radius: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: #F2F2F2;
+        }
+
+        .img2 {
+            width: 600px;
+            height: 340px;
+            margin-left: 20px;
+            margin-right: 10px;
+            border-radius: 25px;
+            float: left;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            background-color: #F2F2F2;
+        }
+
+        .dataCard {
+            display: flex;
+            flex-direction: row;
+            margin-bottom: 60px;
+            height: 300px;
+        }
+
+        .mainCardOne {
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-left: 20px;
+            width: 1000px;
+            height: 300px;
+            cursor: pointer;
+            background-color: #F2F2F2;
+        }
+
+        .mainCardTwo {
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-left: auto;
+            margin-right: 20px;
+            width: 700px;
+            height: 300px;
+            cursor: pointer;
+            padding: 20px;
+            background-color: #F2F2F2;
+        }
+
+        .input-row {
+            display: flex;
+            margin-left: 20px;
+            margin: 10px;
+        }
+
+        .input-column {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        label {
+            font-weight: bold;
+            margin-left: 20px;
+            color: #333333;
+        }
+
+        input[type="number"] {
+            padding: 5px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            width: 200px;
+            height: 20px;
+            margin-left: 20px;
+            margin-top: 20px;
+        }
+
+        .form {
+            align-items: center;
+            justify-content: center;
+            display: flex;
+        }
+
+        .buttonProceed {
+            width: 90px;
+            height: 45px;
+            border-radius: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #4A90E2;
+            border-color: #4A90E2;
+            border: none;
+            color: #fff;
+            margin-top: 30px;
+        }
+
+        .buttonProceed2 {
+            width: 90px;
+            height: 45px;
+            border-radius: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #4A90E2;
+            border-color: #4A90E2;
+            border: none;
+            color: #fff;
+            margin-top: 30px;
+            margin-left: 110px;
+        }
+
+        .buttonProceed:hover {
+            background-color: #F5A623;
+            cursor: pointer;
+        }
+
+        .buttonProceed2:hover {
+            background-color: #F5A623;
+            cursor: pointer;
+        }
+
+        h2 {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #333333;
+        }
+
+        .card p {
+            margin-left: 9px;
+            margin-top: 15px;
+        }
+
+        .mainCardTwo p {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 50px;
+        }
+
+        .p {
+            color: #4A90E2;
+            margin-left: 250px;
+            margin-top: 30px;
+        }
+
+        .p:hover {
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        .img:hover {
+            cursor: pointer;
+        }
+
+        .containerd {
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #F2F2F2;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+        }
+
+        .submit-button {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        .submit-button input {
+            background-color: #4A90E2;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .submit-button input:hover {
+            background-color: #F5A623;
+        }
+
+        .comment-section {
+            margin-top: 20px;
+            background-color: #F2F2F2;
+            border-radius: 10px;
+            padding: 10px;
+        }
+
+        .comment {
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+        }
+
+        .comment h4 {
+            margin: 0;
+            color: #4A90E2;
+        }
+
+        .comment p {
+            margin: 5px 0;
+            color: #333333;
+        }
+
+        .avatar {
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            margin-right: 10px;
+        }
+
+        .comment-header {
+            display: flex;
+            align-items: center;
+        }
+
+        .comment-button {
+            background-color: #4A90E2;
+            color: #fff;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .comment-button:hover {
+            background-color: #F5A623;
+        }
+
+
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <img class="headerImg" src="static/images/top.jpg" alt="Profile Picture">
+    </div>
+
+    <div class="logo">
+        <img class="logImg" src="static/images/logoDrop.jpeg" alt="Profile Picture">
+    </div>
+
+    <div class="navbar">
+        <a href="/goToIndus">Home</a>
+        <a href="/goToAbout">About</a>
+        <a href="/goToGuide">Sensor Guidelines</a>
+        <a href="/signout">Sign Out</a>
+        <div class="img" onclick="goToProfile()" >
+            <img class="profile" src="static/images/logo.jpg" alt="Profile Picture">
+        </div>
+    </div>
+
+    <div class="main">
+        <p>YOUR WATER RECYCLING AND REUSE JOURNEY START HERE!</p>
+    </div>
+
+    <div class="dataCard">
+        <div id="mainCardOne" class="mainCardOne">
+            <h2>Enter Your Water Data</h2>
+            <form class="form" action="/classifyIndustrial" method="post">
+                <div class="input-row">
+                    <div class="input-column">
+                        <label for="ph">PH</label>
+                        <input type="number" id="ph" name="ph" step="0.01" required>
+                    </div>
+                    <div class="input-column">
+                        <label for="tds">TDS</label>
+                        <input type="number" id="tds" name="tds" step="0.01" required>
+                    </div>
+                    <div class="input-column">
+                        <label for="turbidity">Turbidity</label>
+                        <input type="number" id="turbidity" name="turbidity" step="0.01" required>
+                    </div>
+                </div>
+                <input type="hidden" name="submitted" value="true">
+                <button type="submit" class="buttonProceed">Proceed</button>
+            </form>
+        </div>
+        <img class="img1" src="static/images/wh.jpg" alt="Picture">
+    </div>
+
+    {% if submitted %}
+    <div class="dataCard">
+        {% if dt_result == 'Contaminated water' %}
+            <img id="imageContaminated" class="img2" src="static/images/contaminated.webp" alt="Contaminated Water">
+        {% elif dt_result == 'Partially Reclaimable water' %}
+            <img id="imagePartiallyReclaimable" class="img2" src="static/images/reclaimable.jpg" alt="Partially reclaimable water">
+        {% elif dt_result == 'Treatable/Recyclable Water' %}
+            <img id="imageTreatable" class="img2" src="static/images/treatable.jpg" alt="Treatable/Recyclable water">
+        {% elif dt_result == 'Clean/Reusable water' %}
+            <img id="imageClean" class="img2" src="static/images/clean.jpg" alt="Clean/Reusable water">
+        {% else %}
+            <img id="imageDefault" class="img2" src="static/images/Home.jpg" alt="Default Image">
+        {% endif %}
+        <div class="dataCard">
+        <div id="mainCardTwo" class="mainCardTwo">
+            <h2>Your water classification</h2>
+            <p>{{ dt_result }}</p>
+            <form class="form" action="/industrial" method="post">
+                <input type="hidden" name="dt_result" value="{{ dt_result }}">
+                <button type="submit" class="buttonProceed2">Recommend</button>
+            </form>
+        </div>
+    </div>
+    </div>
+    <script>
+        // Scrolling to the card automatically
+        document.getElementById('mainCardTwo').scrollIntoView({ behavior: 'smooth' });
+    </script>
+    {% endif %}
+
+    <div class="main">
+        <p>YOUR PERSONALIZED RECOMMENDATIONS ARE HERE!</p>
+    </div>
+
+    <div class="container" id="recommendations">
+        {% if recommendations %}
+            <div class="dataCard" id="container">
+                {% for recommendation in recommendations %}
+                    <div class="card">
+                        <input type="hidden" name="committed" value="true">
+                        <h2> {{ recommendation.method_name }}</h2>
+                        <h2>Recommendation Advantage</h2>
+                        <p>{{ recommendation.advantages }}</p>
+                       <a href="#" class="learn-more-link" data-index="{{ loop.index }}" onclick="showIndusDetails({{ loop.index }})">Learn More</a>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+
+    <div id="Indusrecommendation-details"></div>
+
+
+    <div id="popup" class="popup">
+            <div class="popup-content">
+                <span class="close-popup" onclick="closePopup()">&times;</span>
+                <p id="popup-message"></p>
+                <button onclick="closePopup()">OK</button>
+            </div>
+    </div>
+
+
+    <div class="footer">
+        <p>&copy; 2024 Water Recycling Project. All rights reserved.</p>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script>
+
+        function goToProfile() {
+            window.location.href = "/profile";
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            if (window.location.search.includes('submitted=true')) {
+                document.getElementById('mainCardTwo').scrollIntoView({ behavior: 'smooth' });
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+        // Check if the container has children (cards)
+        const container = document.getElementById('container');
+        if (container.children.length > 0) {
+            container.scrollIntoView({ behavior: 'smooth' });
+            }
+        });
+
+        //Handling Pop-up functions
+         function displayPopup(message) {
+            const popup = document.getElementById('popup');
+            const popupMessage = document.getElementById('popup-message');
+            popupMessage.textContent = message;
+            popup.style.display = 'flex';
+        }
+
+        function closePopup() {
+            const popup = document.getElementById('popup');
+            popup.style.display = 'none';
+        }
+
+        // Function to scroll to recommendation-details
+        function scrollToDetails() {
+            const recommendationDetails = document.getElementById('Indusrecommendation-details');
+            recommendationDetails.scrollIntoView({ behavior: 'smooth' });
+        }
+        // Function to show recommendation details
+         function showIndusDetails(index) {
+            // Use the passed index parameter correctly
+            $.ajax({
+                url: `/Indusdetails/${index}`,
+                type: 'GET',
+                success: function(data) {
+                console.log("Fetched data:", data);
+                // Update recommendation-details div with fetched details
+                $('#Indusrecommendation-details').html(`
+                    <div class="containerd">
+                      <h2>Recommendation: ${data.method_name}</h2>
+                        <ul style="text-decoration:none;" >
+                            <h2>Description</h2>
+                            <li><p>${data.description}</p></li>
+                            <h2>Advantage</h2>
+                            <li><p>${data.advantages}</p></li>
+                        </ul>
+                        <div class="icons" style="float: right;">
+                            <button class="heartIcon" onclick="saveFavorite('${data.method_name}', '${data.description}')">❤️</button>
+                            <p style="margin-top: 5px; margin-left: 5px;">Save</p>
+                        </div>
+                        ${data.method_name ? `
+                        <div class="feedback">
+                            <textarea data-method="${data.method_name}" placeholder="Add Comment"></textarea>
+                        </div>
+                        <button class="buttond" onclick="submitComment('${data.method_name}')">Submit</button>
+                        <div class="comment" >
+                            <!-- Existing comments will be displayed here -->
+                            <div id="comments-${data.method_name}"> </div>
+                        </div>
+                    ` : ''}
+                     </div>
+                `);
+                scrollToDetails();
+                fetchComments(data.method_name);
+                },
+                        error: function(error) {
+                console.error('Error fetching recommendation details:', error);
+            }
+        });
+    }
+
+         function submitComment(methodName) {
+        const commentInput = document.querySelector(`textarea[data-method="${methodName}"]`);
+        const comment = commentInput.value;
+
+        if (comment) {
+            // Save comment in the Firebase database under the correct method name
+            $.ajax({
+                url: `https://h2optimize-3b6cd-default-rtdb.asia-southeast1.firebasedatabase.app/Comments/${methodName}.json`,
+                type: 'POST',
+                data: JSON.stringify(comment),
+                contentType: 'application/json',
+                success: function () {
+                    commentInput.value = ''; // Clear the input
+                    fetchComments(methodName); // Refresh comments
+                }
+            });
+        }
+    }
+
+        function fetchComments(methodName) {
+            $.ajax({
+                url: `https://h2optimize-3b6cd-default-rtdb.asia-southeast1.firebasedatabase.app/Comments/${methodName}.json`,
+                type: 'GET',
+                success: function (data) {
+                    const commentsDiv = document.getElementById(`comments-${methodName}`);
+                    commentsDiv.innerHTML = ''; // Clear existing comments
+
+                    if (data) {
+                        Object.values(data).forEach(comment => {
+                            const commentElement = document.createElement('div');
+                            commentElement.textContent = comment;
+                            commentsDiv.appendChild(commentElement);
+                        });
+                    }
+                }
+            });
+        }
+
+        function saveFavorite(methodName, description) {
+            const data = {
+                method_name: methodName,
+                description: description,
+            };
+
+            fetch('/save_favorite', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                displayPopup("Recommendation saved as favorite!");
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+
+
+
+</script>
+
+</body>
+</html>

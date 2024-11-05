@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>H2Optimize</title>
+    <link rel="icon" type="image/png" href="static/images/logo-removebg.png">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background-image: url('static/images/waterMark.png');
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            overflow: hidden;
+            background-color: #eef3fa;
+        }
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(238, 243, 250,);
+            backdrop-filter: blur(7px);
+            z-index: 1;
+        }
+        h1 {
+            margin-bottom: 40px;
+            margin-top: -20px;
+            z-index: 2;
+        }
+        .card-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            z-index: 2;
+        }
+        .card {
+            background-color: #c4e2f7;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width: 200px;
+            text-align: center;
+            padding: 20px;
+            z-index: 2;
+            margin:5px;
+        }
+        .card img {
+            width: 100px;
+            height: 100px;
+        }
+        .card:hover{
+            cursor:pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Select User Category</h1>
+    <div class="card-container">
+        <div class="card" id="homeCard">
+            <img src="static/images/Home.png" alt="Home">
+            <h2>HOME</h2>
+        </div>
+        <div class="card" id="industrialCard">
+            <img src="static/images/industrial.png" alt="Industrial">
+            <h2>INDUSTRIAL</h2>
+        </div>
+    </div>
+
+
+     <script>
+        document.getElementById('homeCard').onclick = function() {
+            window.location.href = '/index';
+        };
+        document.getElementById('industrialCard').onclick = function() {
+            window.location.href = '/indus';
+        };
+    </script>
+</body>
+</html>

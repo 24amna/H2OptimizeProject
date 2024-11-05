@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>H2Optimize</title>
+    <link rel="icon" type="image/png" href="static/images/logo-removebg.png">
+    <style>
+      body {
+        font-family: 'Montserrat', sans-serif;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        background: #eef3fa;
+        overflow: hidden;
+        background-color: #154360;
+        background: -webkit-linear-gradient(to right, #7FB3D5, #154360);
+        background: linear-gradient(to right, #7FB3D5, #154360);
+      }
+      header,
+      footer {
+        background-color: #00509e;
+        color: #fff;
+        padding: 10px 0;
+        text-align: center;
+      }
+      main {
+        flex: 1;
+        padding: 20px;
+      }
+      .card {
+        background-color: #FBFCFC;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        margin-bottom: 20px;
+        padding: 20px;
+        cursor: pointer;
+        transition: transform 0.3s ease;
+        width: 1200px;
+        position: relative;
+        margin-left: 30px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      }
+      .remove-btn {
+        background-color: #d9534f;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 3px;
+        cursor: pointer;
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        margin: 20px;
+        height: 30px;
+        width:70px;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+      }
+      .header {
+        background-color: #649fbbfa;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .navbar {
+        width: 100%;
+        height: 50px;
+        background-color: #A9CCE3;
+        display: flex;
+        padding: 10px 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .navbar img {
+        margin-top: 0px;
+        margin-left: 550px;
+        float: right;
+      }
+
+      .navbar-left,
+      .navbar-right {
+        display: flex;
+        align-items: center;
+      }
+
+      .navbar-left {
+        flex: 1;
+      }
+      .navbar-right {
+        float: right;
+      }
+
+      .navbar-left a,
+      .navbar-right a {
+        color: #154360;
+        text-decoration: none;
+        padding: 14px 20px;
+        text-align: center;
+        font-size: 18px;
+        font-weight: bold;
+      }
+
+      .navbar-left a:hover,
+      .navbar-right a:hover {
+        background-color: rgba(83, 80, 80, 0.116);
+        border-radius: 4px;
+      }
+      .profile {
+        width: 40px;
+        height: 40px;
+        border-radius: 60px;
+        margin-right: 50px;
+        border-color: #333;
+        border: solid;
+      }
+    </style>
+  </head>
+  <body>
+  <div class="navbar">
+    <div class="navbar-left">
+      <a href="/goToIndex">Home</a>
+      <a href="/goToGuide">Guide</a>
+      <a href="#contact">Contact</a>
+    </div>
+    <div class="img" onclick="goToProfile()">
+      <img class="profile" src="static/images/logo.jpg" alt="Profile Picture" />
+    </div>
+  </div>
+
+  <main>
+    {% for favorite in favorites %}
+    <div class="card" onclick="goToDetailsPage(this)">
+      <h2>{{ favorite.method_name }}</h2>
+      <p>{{ favorite.description }}</p>
+      <button class="remove-btn" onclick="removeCard(event)">Remove</button>
+    </div>
+    {% endfor %}
+  </main>
+
+  <script>
+
+    function removeCard(event) {
+      event.stopPropagation();
+      var card = event.target.parentNode;
+      var methodName = card.querySelector('h2').innerText;
+      // Send a request to remove the favorite from the database
+      fetch('/remove_favorite', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({method_name : methodName}),
+      })
+      .then(response => {
+        if (response.ok) {
+          // Remove the card from the UI
+          card.parentNode.removeChild(card);
+        } else {
+          console.error('Error removing favorite:', response);
+        }
+      })
+      .catch(error => console.error('Error:', error));
+    }
+  </script>
+</body>
+</html>

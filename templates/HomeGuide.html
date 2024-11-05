@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="static/images/logo-removebg.png">
+<title>H2Optimize</title>
+<style>
+    body {
+        background-color: #e6edf5c4;
+        margin: 0;
+        font-family: Arial, sans-serif;
+        overflow: hidden;
+        background-color: #154360;
+            background: -webkit-linear-gradient(to right, #7FB3D5, #154360);
+            background: linear-gradient(to right, #7FB3D5, #154360);
+    }
+
+    .container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        padding: 10px;
+        box-sizing: border-box;
+    }
+
+    .card {
+        background-color: #f0f0f0;
+        padding: 40px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        width: 90%;
+        max-width: 1300px;
+        height: 400px;
+        margin-bottom: 170px;
+        background-image: url('static/images/guideBack.jpg');
+        background-size: cover;
+        position: relative;
+        
+    }
+    .card::before{
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        backdrop-filter: blur(7px); 
+        border-radius: 8px;
+    }
+
+    .card-content {
+        text-align:left;
+        position: relative; 
+        z-index: 1;
+        color: #333; 
+    }
+    .navbar {
+            width: 100%;
+            height: 50px;
+            background-color: #A9CCE3;
+            display: flex;
+            padding: 10px 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar img { 
+            margin-top: 0px;
+            margin-left: 550px;
+            float:right;
+            
+        }
+
+        .navbar-left, .navbar-right {
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar-left {
+            flex: 1;
+        }
+        .navbar-right{
+            float:right;
+        }
+
+        .navbar-left a, .navbar-right a {
+            color: #154360;
+            text-decoration: none;
+            padding: 14px 20px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .navbar-left a:hover, .navbar-right a:hover {
+            background-color: rgba(83, 80, 80, 0.116);
+            border-radius: 4px;
+        }
+       .profile{
+        width:40px;
+        height:40px;
+        border-radius: 60px;
+        margin-right: 50px;
+        border-color: #f7f2f2e0;
+        border: solid;
+       }
+       .head{
+        display: flex;
+        font-family: Arial, Helvetica, sans-serif;
+        color: #454546;
+        font-size: 24px;
+        margin-left: 40px;
+        align-self: center;
+        justify-content: center;
+       }
+       .card-content p{
+        color:rgba(0, 0, 0, 0.877); ;
+       }
+       .sensorPh{
+        width:120px;
+        height:120px;
+        float: right;
+        margin-right: 10px;
+        margin-bottom: 40px;
+        margin-top: -40px;
+       }
+       .sensorT{
+        width:120px;
+        height:120px;
+        float: right;
+        margin-right: 5px;
+        margin-bottom: 40px;
+        margin-top: -95px;
+       }
+       .sensor{
+        width:150px;
+        height:150px;
+        float: right;
+        margin-right: 5px;
+        margin-bottom: 40px;
+        margin-top: -130px;
+       }
+       .img:hover{
+            cursor:pointer;
+        }
+</style>
+</head>
+<body>
+     
+    <div class="navbar">
+        <div class="navbar-left">
+            <a href="/goToIndex">Home</a>
+            <a href="/goToGuide">Guide</a>
+            <a href="/goToFav">Favourites</a>
+            <a href="/contact">Contact</a>
+        </div>
+        
+        <div class="img"  onclick="goToProfile()">
+            <img class="profile" src="static/images/logo.jpg" alt="Profile Picture">
+        </div>
+    </div>
+    <h3 class="head">Sensors Guide</h3>
+    <div class="container">
+        <div class="card">
+            <div class="card-content">
+                <h2>Sensors Needed</h2>
+                <p>PH Sensor:  Measures the acidity or alkalinity of water</p>
+                <img class="sensorPh" src="static/images/ph.png" alt="Profile Picture">
+                <p>TDS Sensor: Measures the total dissolved solids in water</p>
+                <p>Turbidity Sensor:  Measures the clarity of water</p>
+                <img class="sensorT" src="static/images/tds.png" alt="Profile Picture">
+                <br>
+                <h2>Usage Details</h2>
+                <p>To use these sensors, place each sensor in 250 ml of water and read
+                    the readings displayed on the meter <br> Note these readings and use them
+                    as input for the classification</p>
+                <p>Make sure the sensors are properly calibrated before
+                    use to ensure
+                    accurate readings <br> Submerge each sensor in the water 
+                    sample without
+                    touching the sides of the container to avoid any interference.
+                    <br> Wait
+                    for the readings to stabilize before recording the values.
+                    It is
+                    recommended to take multiple readings to ensure consistency 
+                    and accuracy</p>
+                <img class="sensor" src="static/images/wS.png" alt="Profile Picture">   
+            </div>
+        </div>
+    </div>
+    <script>
+        function goToProfile() {
+            window.location.href = "/profile";
+        }
+    </script>
+</body>
+</html>
