@@ -32,7 +32,7 @@ def before_request():
 
 @app.route('/')
 def home():
-    return render_template('Sign-in.html')
+    return render_template('index.html')
 
 
 @app.route('/goToIndus')
