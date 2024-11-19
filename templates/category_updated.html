@@ -8,7 +8,7 @@
   </title>
   <meta content="" name="description"/>
   <meta content="width=device-width, initial-scale=1" name="viewport"/>
-  <link href="static/images/logo-removebg.png" rel="icon" type="image/png"/>
+  <link rel="icon" type="image/png" href="static/images/logo-removebg.png">
   <!-- Place favicon.ico in the root directory -->
   <!-- ========================= CSS here ========================= -->
   <link href="static/assets/css/bootstrap-5.0.5-alpha.min.css" rel="stylesheet"/>
@@ -331,16 +331,14 @@
     </div>
     <!-- navbar area -->
    </div>
-
-   <br>
-   <br>
-   <br>
-   <br>
-
+   <br/>
+   <br/>
+   <br/>
+   <br/>
    <!--=========================Data Entry-section start =========================-->
-    <div class="dataCard">
-        <div id="mainCardOne" class="mainCardOne">
-         <div class="row">
+   <div class="dataCard">
+    <div class="mainCardOne" id="mainCardOne">
+     <div class="row">
       <div class="col-xl-8 mx-auto">
        <div class="section-title text-center mb-55">
         <span class="wow fadeInDown" data-wow-delay=".2s">
@@ -351,43 +349,48 @@
         </h2>
         <p class="wow fadeInUp" data-wow-delay=".6s">
          Each value determines the results
-         <br class="d-none d-lg-block"/>
-
+         <br class="d-none d-lg-block">
+         </br>
         </p>
+       </div>
+       <form action="/classify" class="form" method="post">
+        <div class="input-row">
+         <div class="input-column">
+          <label for="ph">
+           PH
+          </label>
+          <input id="ph" name="ph" required="" step="0.01" type="number"/>
+         </div>
+         <div class="input-column">
+          <label for="tds">
+           TDS
+          </label>
+          <input id="tds" name="tds" required="" step="0.01" type="number"/>
+         </div>
+         <div class="input-column">
+          <label for="turbidity">
+           Turbidity
+          </label>
+          <input id="turbidity" name="turbidity" required="" step="0.01" type="number"/>
+         </div>
         </div>
-        <form class="form" action="/classify" method="post">
-                <div class="input-row">
-                    <div class="input-column">
-                        <label for="ph">PH</label>
-                        <input type="number" id="ph" name="ph" step="0.01" required>
-                    </div>
-                    <div class="input-column">
-                        <label for="tds">TDS</label>
-                        <input type="number" id="tds" name="tds" step="0.01" required>
-                    </div>
-                    <div class="input-column">
-                        <label for="turbidity">Turbidity</label>
-                        <input type="number" id="turbidity" name="turbidity" step="0.01" required>
-                    </div>
-                </div>
-                <input type="hidden" name="submitted" value="true">
-                <a  style="margin-left:22px; margin-top:30px; width:200px; height:60px; border-radius:5px;" class="btn theme-btn page-scroll" data-animation="fadeInUp" data-delay=".9s" data-duration="1.5s" href="#contact">
-                 Proceed
-                 </a>
-            </form>
+        <input name="submitted" type="hidden" value="true"/>
+        <button class="btn theme-btn page-scroll" data-animation="fadeInUp" data-delay=".9s" data-duration="1.5s" href="" style="margin-left:22px; margin-top:30px; width:200px; height:60px; border-radius:5px;">
+         Proceed
+        </button>
+       </form>
       </div>
      </div>
-        </div>
-        </div>
-   <br>
-   <br>
-   <br>
-   <br>
-   <br>
-   <br>
-
+    </div>
+   </div>
+   <br/>
+   <br/>
+   <br/>
+   <br/>
+   <br/>
+   <br/>
    <!--========================= category-section start ========================= -->
-    {% if submitted %}
+   {% if submitted %}
    <section class="service-section pt-150" id="services">
     <div class="shape shape-3">
      <img alt="" src="static/assets/img/shapes/shape-3.svg"/>
@@ -404,26 +407,33 @@
         </h2>
         <p class="wow fadeInUp" data-wow-delay=".6s">
          Save water, save life. Every drop counts
-         <br class="d-none d-lg-block"/>
-
+         <br class="d-none d-lg-block">
+         </br>
         </p>
        </div>
       </div>
      </div>
-     <div class="row">
+     <div style="width:1500px;" class="row">
       <div class="col-lg-4 col-md-6">
        <div class="service-item mb-30">
-         <div class="service-icon mb-25">
-            <img src="static/assets/img/bg/category.png" alt="Water Icon" style="width: 70.285px; height: 58.102px;">
+        <div class="service-icon mb-25">
+         <img alt="Water Icon" src="static/assets/img/bg/category.png" style="width: 70.285px; height: 58.102px;"/>
         </div>
         <div class="service-content">
-         <div id="mainCardTwo" class="mainCardTwo">
-            <p>{{ dt_result }}</p>
-            <form class="form" action="/recommend" method="post">
-                <input type="hidden" name="dt_result" value="{{ dt_result }}">
-                <button type="submit" class="buttonProceed2">Recommend</button>
-            </form>
-        </div>
+         <div class="mainCardTwo" id="mainCardTwo">
+          <form action="/recommend" class="form" method="post">
+           <input name="dt_result" type="hidden" value="{{ dt_result }}"/>
+          </form>
+          <div class="card-content">
+           <h4>
+            Predicted Category
+           </h4>
+           <h2 id="category-result">
+            {{ dt_result }}
+           </h2>
+          </div>
+         </div>
+         <br>
          <a class="read-more" href="#" onclick="gotodetails()">
           Get Recommendations
           <i class="lni lni-arrow-right">
@@ -438,9 +448,9 @@
     </div>
    </section>
    <script>
-        // Scrolling to the card automatically
+    // Scrolling to the card automatically
         document.getElementById('mainCardTwo').scrollIntoView({ behavior: 'smooth' });
-    </script>
+   </script>
    {% endif %}
    <!--=========================Category-end ==============================-->
    <!--========================= service-section end ========================= -->
@@ -452,7 +462,8 @@
        <div class="col-xl-4 col-lg-5 col-md-6">
         <div class="footer-widget mb-30">
          <a class="logo" href="index.html">
-          <img alt="" src="static/assets/img/logo/logo.svg"/>
+          <img alt="" src="static/assets/img/logo/logo.svg">
+          </img>
          </a>
          <p>
           Lorem ipsum dolor serit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut
@@ -502,22 +513,17 @@
           </li>
           <li>
            <a href="#">
-            About
+            About Us
            </a>
           </li>
           <li>
            <a href="#">
-            Services
+            Solutions
            </a>
           </li>
           <li>
            <a href="#">
-            Doctor
-           </a>
-          </li>
-          <li>
-           <a href="#">
-            Blog
+            Users Category
            </a>
           </li>
           <li>
@@ -536,32 +542,32 @@
          <ul class="footer-links">
           <li>
            <a href="#">
-            Cardiology
+
            </a>
           </li>
           <li>
            <a href="#">
-            Neurology
+
            </a>
           </li>
           <li>
            <a href="#">
-            Gastroenterology
+
            </a>
           </li>
           <li>
            <a href="#">
-            Routine Checkup
+
            </a>
           </li>
           <li>
            <a href="#">
-            Orthopedics
+
            </a>
           </li>
           <li>
            <a href="#">
-            Dental Surgery
+
            </a>
           </li>
          </ul>
@@ -570,10 +576,10 @@
        <div class="col-xl-4 col-lg-12 col-md-7">
         <div class="footer-widget mb-30">
          <h4>
-          Medical Location
+          Our Location
          </h4>
          <div class="map-canvas">
-          <iframe class="map" id="gmap_canvas" src="https://maps.google.com/maps?q=Mission%20District%2C%20San%20Francisco%2C%20CA%2C%20USA&amp;t=&amp;z=13&amp;ie=UTF8&amp;iwloc=&amp;output=embed">
+          <iframe class="map" id="gmap_canvas" src="https://www.google.com/maps/place/COMSATS+University/@31.4027337,74.2100689,17z/data=!3m1!4b1!4m6!3m5!1s0x3918ffd0bc7c5f71:0x879e9b82857bcd94!8m2!3d31.4027291!4d74.2126438!16s%2Fg%2F1tf9r6c0?entry=ttu&g_ep=EgoyMDI0MTExMy4xIKXMDSoASAFQAw%3D%3D&amp;t=&amp;z=13&amp;ie=UTF8&amp;iwloc=&amp;output=embed">
           </iframe>
          </div>
         </div>
@@ -597,10 +603,14 @@
    </script>
    <script src="static/assets/js/main.js">
    </script>
-   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js">
+   </script>
+   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js">
+   </script>
+   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js">
+   </script>
+   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js">
+   </script>
    <script>
     document.addEventListener('DOMContentLoaded', function() {
             if (window.location.search.includes('submitted=true')) {
@@ -609,5 +619,23 @@
         });
    </script>
   </header>
+  <script>
+   document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('form[action="/classify"]');
+    const categorySection = document.getElementById('services');
+    const proceedButton = document.querySelector('a[href="#contact"]');
+
+    proceedButton.addEventListener('click', function(event) {
+        event.preventDefault();
+        form.submit();
+        if (categorySection) {
+            setTimeout(() => {
+                categorySection.style.display = 'block';
+                categorySection.scrollIntoView({ behavior: 'smooth' });
+            }, 500); // Adjust delay for backend response
+        }
+    });
+});
+  </script>
  </body>
 </html>

@@ -32,7 +32,7 @@ def before_request():
 
 @app.route('/')
 def home():
-    return render_template('index.html')
+    return render_template('category_updated.html')
 
 
 @app.route('/goToIndus')
@@ -202,13 +202,13 @@ def classify():
 
             classification_result = classify_water(ph, solids, turbidity)
 
-            return render_template('index.html', dt_result=classification_result, submitted=True)
+            return render_template('category_updated.html', dt_result=classification_result, submitted=True)
 
         except Exception as e:
             # Handle any error during classification and show an error message on the page
-            return render_template('index.html', error=str(e), submitted=False)
+            return render_template('category_updated.html', error=str(e), submitted=False)
 
-    return render_template('index.html')
+    return render_template('category_updated.html')
 
 
 @app.route('/recommend', methods=['POST'])

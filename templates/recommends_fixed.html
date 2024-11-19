@@ -8,9 +8,8 @@
   </title>
   <meta content="" name="description"/>
   <meta content="width=device-width, initial-scale=1" name="viewport"/>
-  <link href="static/images/logo-removebg.png" rel="icon" type="image/png"/>
-  <!-- Place favicon.ico in the root directory -->
-  <!-- ========================= CSS here ========================= -->
+  <link rel="icon" type="image/png" href="static/images/logo-removebg.png">
+
   <link href="static/assets/css/bootstrap-5.0.5-alpha.min.css" rel="stylesheet"/>
   <link href="static/assets/css/LineIcons.2.0.css" rel="stylesheet"/>
   <link href="static/assets/css/animate.css" rel="stylesheet"/>
@@ -69,122 +68,6 @@
 .navbar-nav .nav-item:last-child {
     margin-right: 0;
 }
-.card {
-            background-color: #A9CCE3;
-            background: -webkit-linear-gradient(to right, #D4E6F1, #A9CCE3);
-            background: linear-gradient(to right, #D4E6F1, #A9CCE3);
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            margin: 20px;
-            width:  350px;
-            height: 200px;
-            cursor: pointer;
-            margin-bottom: 200px;
-            transition: transform 0.3s ease;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-        }
-
-        .card h2 {
-            margin-bottom: 10px;
-            color: #154360;
-        }
-
-        .card p {
-            margin: 0;
-        }
-
-        .button {
-            background-color: #3498db;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            padding: 10px 20px;
-            cursor: pointer;
-            text-decoration: none;
-        }
-
-        .button:hover {
-            background-color: #2980b9;
-        }
-        .img1 {
-            width: 500px;
-            height: 300px;
-            margin-right: 20px;
-            margin-left: 10px;
-            border-radius: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            background-color: #A9CCE3;
-        }
-        .dataCard {
-            display: flex;
-            flex-direction: row;
-            margin-bottom: 60px;
-            height: 300px;
-        }
-        .mainCardOne {
-            margin-left: 155px;
-            width: 1000px;
-            height: 300px;
-            cursor: pointer;
-            background-color: #fffff;
-        }
-         .input-row {
-            display: flex;
-            margin-left: 20px;
-            margin: 10px;
-        }
-
-        .input-column {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        form {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        label {
-            font-weight: bold;
-            margin-left: 20px;
-            color: #26435a;
-        }
-
-        input[type="number"] {
-            padding: 15px;
-            border-radius: 5px;
-            border: 1px solid #ddd;
-            width: 200px;
-            height: 20px;
-            margin-left: 20px;
-            margin-top: 20px;
-        }
-
-        .form {
-            align-items: center;
-            justify-content: center;
-            display: flex;
-        }
-
-        .buttonProceed {
-            width: 110px;
-            height: 45px;
-            border-radius: 25px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: #0b71d8;
-            border-color: #0b71d8;
-            border: none;
-            color: #111213;
-            margin-top: 30px;
-        }
 
 
 @media (max-width: 768px) {
@@ -331,63 +214,7 @@
     </div>
     <!-- navbar area -->
    </div>
-
-   <br>
-   <br>
-   <br>
-   <br>
-
-   <!--=========================Data Entry-section start =========================-->
-    <div class="dataCard">
-        <div id="mainCardOne" class="mainCardOne">
-         <div class="row">
-      <div class="col-xl-8 mx-auto">
-       <div class="section-title text-center mb-55">
-        <span class="wow fadeInDown" data-wow-delay=".2s">
-         Data
-        </span>
-        <h2 class="mb-15 wow fadeInUp" data-wow-delay=".4s">
-         Enter Your Water Data Here
-        </h2>
-        <p class="wow fadeInUp" data-wow-delay=".6s">
-         Each value determines the results
-         <br class="d-none d-lg-block"/>
-
-        </p>
-        </div>
-        <form class="form" action="/classify" method="post">
-                <div class="input-row">
-                    <div class="input-column">
-                        <label for="ph">PH</label>
-                        <input type="number" id="ph" name="ph" step="0.01" required>
-                    </div>
-                    <div class="input-column">
-                        <label for="tds">TDS</label>
-                        <input type="number" id="tds" name="tds" step="0.01" required>
-                    </div>
-                    <div class="input-column">
-                        <label for="turbidity">Turbidity</label>
-                        <input type="number" id="turbidity" name="turbidity" step="0.01" required>
-                    </div>
-                </div>
-                <input type="hidden" name="submitted" value="true">
-                <a  style="margin-left:22px; margin-top:30px; width:200px; height:60px; border-radius:5px;" class="btn theme-btn page-scroll" data-animation="fadeInUp" data-delay=".9s" data-duration="1.5s" href="#contact">
-                 Proceed
-                 </a>
-            </form>
-      </div>
-     </div>
-        </div>
-        </div>
-   <br>
-   <br>
-   <br>
-   <br>
-   <br>
-   <br>
-
-   <!--========================= category-section start ========================= -->
-    {% if submitted %}
+   <!--========================= service-section start ========================= -->
    <section class="service-section pt-150" id="services">
     <div class="shape shape-3">
      <img alt="" src="static/assets/img/shapes/shape-3.svg"/>
@@ -397,10 +224,10 @@
       <div class="col-xl-8 mx-auto">
        <div class="section-title text-center mb-55">
         <span class="wow fadeInDown" data-wow-delay=".2s">
-         Category
+         Solutions
         </span>
         <h2 class="mb-15 wow fadeInUp" data-wow-delay=".4s">
-         Predicted Category for You
+         Recommended Solutions for You
         </h2>
         <p class="wow fadeInUp" data-wow-delay=".6s">
          Save water, save life. Every drop counts
@@ -414,21 +241,70 @@
       <div class="col-lg-4 col-md-6">
        <div class="service-item mb-30">
          <div class="service-icon mb-25">
-            <img src="static/assets/img/bg/category.png" alt="Water Icon" style="width: 70.285px; height: 58.102px;">
+            <img src="static/assets/img/bg/element.png" alt="Water Icon" style="width: 70.285px; height: 58.102px;">
         </div>
         <div class="service-content">
-         <div id="mainCardTwo" class="mainCardTwo">
-            <p>{{ dt_result }}</p>
-            <form class="form" action="/recommend" method="post">
-                <input type="hidden" name="dt_result" value="{{ dt_result }}">
-                <button type="submit" class="buttonProceed2">Recommend</button>
-            </form>
-        </div>
+         {% for recommendation in recommendations %}
+         <h4>
+          {{ recommendation.method_name }}
+         </h4>
+         <p>
+          {{ recommendation.advantages }}
+         </p>
          <a class="read-more" href="#" onclick="gotodetails()">
-          Get Recommendations
+          Read More
           <i class="lni lni-arrow-right">
           </i>
          </a>
+         {% endfor %}
+        </div>
+        <div class="service-overlay img-bg">
+        </div>
+       </div>
+      </div>
+      <div class="col-lg-4 col-md-6">
+       <div class="service-item mb-30">
+         <div class="service-icon mb-25">
+            <img src="static/assets/img/bg/hose.png" alt="Water Icon" style="width: 70.285px; height: 58.102px;">
+        </div>
+        <div class="service-content">
+         {% for recommendation in recommendations %}
+         <h4>
+          {{ recommendation.method_name }}
+         </h4>
+         <p>
+          {{ recommendation.advantages }}
+         </p>
+         <a class="read-more" href="#" onclick="gotodetails()">
+          Read More
+          <i class="lni lni-arrow-right">
+          </i>
+         </a>
+         {% endfor %}
+        </div>
+        <div class="service-overlay img-bg">
+        </div>
+       </div>
+      </div>
+      <div class="col-lg-4 col-md-6">
+       <div class="service-item mb-30">
+         <div class="service-icon mb-25">
+            <img src="static/assets/img/bg/water.png" alt="Water Icon" style="width: 70.285px; height: 58.102px;">
+         </div>
+        <div class="service-content">
+         {% for recommendation in recommendations %}
+         <h4>
+          {{ recommendation.method_name }}
+         </h4>
+         <p>
+          {{ recommendation.advantages }}
+         </p>
+         <a class="read-more" href="#" onclick="gotodetails()">
+          Read More
+          <i class="lni lni-arrow-right">
+          </i>
+         </a>
+         {% endfor %}
         </div>
         <div class="service-overlay img-bg">
         </div>
@@ -437,12 +313,6 @@
      </div>
     </div>
    </section>
-   <script>
-        // Scrolling to the card automatically
-        document.getElementById('mainCardTwo').scrollIntoView({ behavior: 'smooth' });
-    </script>
-   {% endif %}
-   <!--=========================Category-end ==============================-->
    <!--========================= service-section end ========================= -->
    <!-- ========================= footer start ========================= -->
    <footer class="footer pt-100 img-bg" style="background-image:url('static/assets/img/bg/footer-bg.jpg');">
@@ -596,17 +466,6 @@
    <script src="static/assets/js/tiny-slider.js">
    </script>
    <script src="static/assets/js/main.js">
-   </script>
-   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-   <script>
-    document.addEventListener('DOMContentLoaded', function() {
-            if (window.location.search.includes('submitted=true')) {
-                document.getElementById('mainCardTwo').scrollIntoView({ behavior: 'smooth' });
-            }
-        });
    </script>
   </header>
  </body>
