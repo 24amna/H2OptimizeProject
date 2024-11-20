@@ -21,6 +21,7 @@
 
 </head>
 <style>
+    * { box-sizing: border-box; }
 .navbar {
     height: 60px;
     display: flex;
@@ -278,7 +279,7 @@
 	<!--========================= we-do-section start========================= -->
 
 	<!-- ========================= blog-section start ========================= -->
-	<section id="blog" class="blog-section pt-150">
+	<section style="margin-top:-200px;"  id="blog" class="blog-section pt-150">
 		<div class="shape shape-7">
 			<img src="static/assets/img/shapes/shape-6.svg" alt="">
 		</div>
@@ -357,11 +358,11 @@
 						<p class="wow fadeInUp" data-wow-delay=".4s">Explore the most common questions here <br class="d-none d-lg-block"> Answer to all of your problems</p>
 					</div>
 				</div>
-			</div>
+	</div>
 	<section class="faq-section theme-bg">
 		<div class="faq-video-wrapper">
 			<div class="faq-video">
-				<img src="static/assets/img/faq/faq-img.jpg" alt="">
+				<img style="width:600px;height:700px;" src="static/assets/img/faq/faq.png" alt="">
 				<div class="video-btn">
 					<a class="popup-video glightbox" href="#"><i class="lni lni-play"></i></a>
 				</div>
@@ -386,7 +387,7 @@
 									<h5 class="mb-0">
 										<button class="faq-btn btn" type="button" data-toggle="collapse" data-target="#collapseOne"
 											aria-expanded="true" aria-controls="collapseOne">
-											What is an academic medical center? <i class="lni"></i>
+											Can recycled water be used for drinking? <i class="lni"></i>
 										</button>
 									</h5>
 								</div>
@@ -394,10 +395,11 @@
 								<div id="collapseOne" class="collapse show" aria-labelledby="headingOne"
 									data-parent="#accordionExample">
 									<div class="faq-content">
-										Lorem ipsum dolor sit amet, consetet Lorem ipsum dolor sit amet, consetet
-										sadipscing elitr, sed dinonumy eirmod tempor invidunt.
-										sadipscing elitr, sed dinonumy eirmod tempor invidunt. Lorem ipsum dolor sit
-										amet, consetet Lorem ipsum dolor.
+										Yes, recycled water can be used for drinking, but it requires advanced treatment processes to ensure it meets strict health standards.
+										These processes include filtration, disinfection,
+										and sometimes additional treatments. The water is carefully monitored to ensure its safety before being made available for human consumption.
+
+
 									</div>
 								</div>
 							</div>
@@ -406,17 +408,20 @@
 									<h5 class="mb-0">
 										<button class="faq-btn btn collapsed" type="button" data-toggle="collapse"
 											data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
-											What is an academic medical center? <i class="lni"></i>
+											Is water reuse safe for the environment? <i class="lni"></i>
 										</button>
 									</h5>
 								</div>
 
 								<div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
 									<div class="faq-content">
-										Lorem ipsum dolor sit amet, consetet Lorem ipsum dolor sit amet, consetet
-										sadipscing elitr, sed dinonumy eirmod tempor invidunt.
-										sadipscing elitr, sed dinonumy eirmod tempor invidunt. Lorem ipsum dolor sit
-										amet, consetet Lorem ipsum dolor.
+										Yes, water reuse is safe for the environment when done properly.
+										It helps reduce the pressure on natural freshwater sources,
+										which is especially crucial in drought-prone areas.
+										Additionally, it reduces pollution by treating and repurposing
+										wastewater that would otherwise be discharged into rivers and oceans.
+										However, it is vital to ensure that proper treatment processes
+										are followed to eliminate harmful pollutants before reuse.
 									</div>
 								</div>
 							</div>
@@ -425,17 +430,18 @@
 									<h5 class="mb-0">
 										<button class="faq-btn btn collapsed" type="button" data-toggle="collapse"
 											data-target="#collapseThree" aria-expanded="true" aria-controls="collapseThree">
-											What is a medical student? <i class="lni"></i>
+											What are the benefits of water recycling for home users? <i class="lni"></i>
 										</button>
 									</h5>
 								</div>
 
 								<div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
 									<div class="faq-content">
-										Lorem ipsum dolor sit amet, consetet Lorem ipsum dolor sit amet, consetet
-										sadipscing elitr, sed dinonumy eirmod tempor invidunt.
-										sadipscing elitr, sed dinonumy eirmod tempor invidunt. Lorem ipsum dolor sit
-										amet, consetet Lorem ipsum dolor.
+										Water recycling at home helps conserve water, reduces water bills,
+										and lowers the demand on municipal water systems.
+										By reusing water for non-potable uses like irrigation or cleaning, homeowners can contribute
+										to environmental sustainability, especially in areas with limited freshwater resources.
+										Additionally, it encourages responsible water management and can make households more self-sufficient.
 									</div>
 								</div>
 							</div>
@@ -444,17 +450,16 @@
 									<h5 class="mb-0">
 										<button class="faq-btn btn collapsed" type="button" data-toggle="collapse"
 											data-target="#collapseFour" aria-expanded="true" aria-controls="collapseFour">
-											How are residents supervised? <i class="lni"></i>
+											How much water can I save by recycling and reuse <i class="lni"></i>
 										</button>
 									</h5>
 								</div>
 
 								<div id="collapseFour" class="collapse" aria-labelledby="headingFour" data-parent="#accordionExample">
 									<div class="faq-content">
-										Lorem ipsum dolor sit amet, consetet Lorem ipsum dolor sit amet, consetet
-										sadipscing elitr, sed dinonumy eirmod tempor invidunt.
-										sadipscing elitr, sed dinonumy eirmod tempor invidunt. Lorem ipsum dolor sit
-										amet, consetet Lorem ipsum dolor.
+										On average, a people can save between 5,000 to 15,000 gallons of
+										water per year through simple water recycling methods.
+										This includes reusing water from showers, baths, laundry, and collecting rainwater.
 									</div>
 								</div>
 							</div>
@@ -475,14 +480,23 @@
 	<br>
 
 	<!-- ========================= subscribe-section start ========================= -->
+	<div class="row">
+				<div class="col-xl-8 mx-auto">
+					<div class="section-title text-center mb-55">
+						<span class="wow fadeInDown" data-wow-delay=".2s">Subscribe</span>
+						<h2 class="mb-15 wow fadeInUp" data-wow-delay=".4s">Enter Your Email Here</h2>
+						<p class="wow fadeInUp" data-wow-delay=".4s">Subscribe for more Information <br class="d-none d-lg-block"> </p>
+					</div>
+				</div>
+	</div>
 	<section class="subscribe-section pt-100 pb-100 img-bg" style="background-image: url(static/assets/img/bg/subscribe-bg.jpg)">
 		<div class="container">
 			<div class="row">
 				<div class="col-xl-7">
 					<div class="section-title">
 						<h2 class="mb-15">Subscribe for more Solutions</h2>
-						<p class="mb-35">Lorem ipsum dolor sit amet, consetetur sadiping elitr, sed dinonumy <br
-								class="d-none d-lg-block"> eirmod tempor invidunt ut labore.</p>
+						<p class="mb-35">Stay updated. Join our community to receive solutions for water management <br
+								class="d-none d-lg-block"> Together, we can make a difference in preserving our planet’s most precious resource</p>
 					</div>
 				</div>
 			</div>
@@ -545,7 +559,7 @@
 					<div class="about-content text-center mb-55">
 						<div class="section-title mb-30">
 							<span class="wow fadeInDown" data-wow-delay=".2s">About Us</span>
-							<h2 class="mb-15 wow fadeInUp" data-wow-delay=".4s">Welcome to Our Clinic</h2>
+							<h2 class="mb-15 wow fadeInUp" data-wow-delay=".4s">Welcome to Our System</h2>
 						</div>
 						<p class="mb-35 wow fadeInUp" data-wow-delay=".6s">Lorem ipsum dolor sit amet, consetetur sadipscing elitr,
 							sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero
@@ -618,7 +632,7 @@
 					</div>
 					<div class="col-xl-4 col-lg-12 col-md-7">
 						<div class="footer-widget mb-30">
-							<h4>Medical Location</h4>
+							<h4>Our Location</h4>
 							<div class="map-canvas">
 								<iframe class="map" id="gmap_canvas"
 									src="https://maps.google.com/maps?q=Mission%20District%2C%20San%20Francisco%2C%20CA%2C%20USA&amp;t=&amp;z=13&amp;ie=UTF8&amp;iwloc=&amp;output=embed"></iframe>
