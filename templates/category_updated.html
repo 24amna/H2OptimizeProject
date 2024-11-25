@@ -421,9 +421,8 @@
         </div>
         <div class="service-content">
          <div class="mainCardTwo" id="mainCardTwo">
-          <form action="/recommend" class="form" method="post">
+
            <input name="dt_result" type="hidden" value="{{ dt_result }}"/>
-          </form>
           <div class="card-content">
            <h4>
             Predicted Category
@@ -434,11 +433,14 @@
           </div>
          </div>
          <br>
-         <a class="read-more" href="#" onclick="gotodetails()">
+         <form action="/recommend" class="form" method="post">
+          <input name="dt_result" type="hidden" value="{{ dt_result }}"/>
+         <button style="border:none;" type="submit" class="read-more"  onclick="gotodetails()">
           Get Recommendations
           <i class="lni lni-arrow-right">
           </i>
-         </a>
+         </button>
+         </form>
         </div>
         <div class="service-overlay img-bg">
         </div>

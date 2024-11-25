@@ -32,7 +32,7 @@ def before_request():
 
 @app.route('/')
 def home():
-    return render_template('index_t.html')
+    return render_template('Sign-in.html')
 
 
 @app.route('/goToIndus')
@@ -122,7 +122,6 @@ def remove_favorite():
         return jsonify({'error': str(e)}), 500
 
 
-
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     if request.method == 'POST':
@@ -157,7 +156,7 @@ def signin():
             decoded_token = auth.verify_id_token(id_token)
             uid = decoded_token['uid']
             print(f"User {uid} signed in successfully.")
-            return redirect(url_for('category'))
+            return redirect(url_for('users'))
         except Exception as e:
             return str(e)
     return render_template('sign-in.html')
@@ -173,7 +172,8 @@ def signout():
 
 @app.route('/category')
 def category():
-    return render_template('category.html')
+    print("route accessed")
+    return render_template('users.html')
 
 
 @app.route('/index')
@@ -230,9 +230,9 @@ def recommend():
 
         session['recommendations'] = recommendations
 
-        return render_template('index.html', recommendations=recommendations, dt_result=dt_result, committed=True)
+        return render_template('recommends_fixed.html', recommendations=recommendations, dt_result=dt_result, committed=True)
 
-    return render_template('index.html')
+    return render_template('recommends_fixed.html')
 
 
 @app.route('/details/<int:index>')

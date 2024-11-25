@@ -121,7 +121,7 @@
            <a href="#">
             <i class="lni lni-phone">
             </i>
-            +03046315217
+            +03041234567
            </a>
           </li>
           <li>
@@ -166,7 +166,7 @@
       <div class="row">
        <div class="col-lg-12">
         <nav class="navbar navbar-expand-sm">
-         <a class="navbar-brand" href="index.html">
+         <a class="navbar-brand" href="index_t.html">
           <img alt="Logo" src="static/assets/img/logo/Logo3.png"/>
          </a>
          <div class="collapse navbar-collapse sub-menu-bar" id="navbarSupportedContent">
@@ -244,19 +244,19 @@
             <img src="static/assets/img/bg/element.png" alt="Water Icon" style="width: 70.285px; height: 58.102px;">
         </div>
         <div class="service-content">
-         {% for recommendation in recommendations %}
+
          <h4>
-          {{ recommendation.method_name }}
+          {{ recommendations[0].method_name }}
          </h4>
          <p>
-          {{ recommendation.advantages }}
+          {{ recommendations[0].advantages }}
          </p>
          <a class="read-more" href="#" onclick="gotodetails()">
           Read More
           <i class="lni lni-arrow-right">
           </i>
          </a>
-         {% endfor %}
+
         </div>
         <div class="service-overlay img-bg">
         </div>
@@ -268,19 +268,19 @@
             <img src="static/assets/img/bg/hose.png" alt="Water Icon" style="width: 70.285px; height: 58.102px;">
         </div>
         <div class="service-content">
-         {% for recommendation in recommendations %}
+
          <h4>
-          {{ recommendation.method_name }}
+          {{ recommendations[1].method_name }}
          </h4>
          <p>
-          {{ recommendation.advantages }}
+          {{ recommendations[1].advantages }}
          </p>
          <a class="read-more" href="#" onclick="gotodetails()">
           Read More
           <i class="lni lni-arrow-right">
           </i>
          </a>
-         {% endfor %}
+
         </div>
         <div class="service-overlay img-bg">
         </div>
@@ -292,19 +292,19 @@
             <img src="static/assets/img/bg/water.png" alt="Water Icon" style="width: 70.285px; height: 58.102px;">
          </div>
         <div class="service-content">
-         {% for recommendation in recommendations %}
+
          <h4>
-          {{ recommendation.method_name }}
+          {{ recommendations[2].method_name }}
          </h4>
          <p>
-          {{ recommendation.advantages }}
+          {{ recommendations[2].advantages }}
          </p>
          <a class="read-more" href="#" onclick="gotodetails()">
           Read More
           <i class="lni lni-arrow-right">
           </i>
          </a>
-         {% endfor %}
+
         </div>
         <div class="service-overlay img-bg">
         </div>
