@@ -1,172 +1,274 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
     <title>H2Optimize</title>
-    <link rel="icon" type="image/png" href="static/images/logo-removebg.png">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="icon" type="image/png" href="static/images/logoDrop-rb.png">
+
+    <!-- ========================= CSS here ========================= -->
+    <link rel="stylesheet" href="static/assets/css/bootstrap-5.0.5-alpha.min.css">
+    <link rel="stylesheet" href="static/assets/css/LineIcons.2.0.css">
+    <link rel="stylesheet" href="static/assets/css/animate.css">
+    <link rel="stylesheet" href="static/assets/css/tiny-slider.css">
+    <link rel="stylesheet" href="static/assets/css/main.css">
+
     <style>
-      body {
-        font-family: 'Montserrat', sans-serif;
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        min-height: 100vh;
-        display: flex;
-        flex-direction: column;
-        background: #eef3fa;
-        overflow: hidden;
-        background-color: #154360;
-        background: -webkit-linear-gradient(to right, #7FB3D5, #154360);
-        background: linear-gradient(to right, #7FB3D5, #154360);
-      }
-      header,
-      footer {
-        background-color: #00509e;
-        color: #fff;
-        padding: 10px 0;
-        text-align: center;
-      }
-      main {
-        flex: 1;
-        padding: 20px;
-      }
-      .card {
-        background-color: #FBFCFC;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        margin-bottom: 20px;
-        padding: 20px;
-        cursor: pointer;
-        transition: transform 0.3s ease;
-        width: 1200px;
-        position: relative;
-        margin-left: 30px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-      }
-      .remove-btn {
-        background-color: #d9534f;
-        color: #fff;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 3px;
-        cursor: pointer;
-        position: absolute;
-        bottom: 0;
-        right: 0;
-        margin: 20px;
-        height: 30px;
-        width:70px;
-        display:flex;
-        align-items:center;
-        justify-content:center;
-      }
-      .header {
-        background-color: #649fbbfa;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-
-      .navbar {
-        width: 100%;
-        height: 50px;
-        background-color: #A9CCE3;
-        display: flex;
-        padding: 10px 20px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      }
-
-      .navbar img {
-        margin-top: 0px;
-        margin-left: 550px;
-        float: right;
-      }
-
-      .navbar-left,
-      .navbar-right {
-        display: flex;
-        align-items: center;
-      }
-
-      .navbar-left {
-        flex: 1;
-      }
-      .navbar-right {
-        float: right;
-      }
-
-      .navbar-left a,
-      .navbar-right a {
-        color: #154360;
-        text-decoration: none;
-        padding: 14px 20px;
-        text-align: center;
-        font-size: 18px;
-        font-weight: bold;
-      }
-
-      .navbar-left a:hover,
-      .navbar-right a:hover {
-        background-color: rgba(83, 80, 80, 0.116);
-        border-radius: 4px;
-      }
-      .profile {
-        width: 40px;
-        height: 40px;
-        border-radius: 60px;
-        margin-right: 50px;
-        border-color: #333;
-        border: solid;
-      }
-    </style>
-  </head>
-  <body>
-  <div class="navbar">
-    <div class="navbar-left">
-      <a href="/goToIndex">Home</a>
-      <a href="/goToGuide">Guide</a>
-      <a href="#contact">Contact</a>
-    </div>
-    <div class="img" onclick="goToProfile()">
-      <img class="profile" src="static/images/logo.jpg" alt="Profile Picture" />
-    </div>
-  </div>
-
-  <main>
-    {% for favorite in favorites %}
-    <div class="card" onclick="goToDetailsPage(this)">
-      <h2>{{ favorite.method_name }}</h2>
-      <p>{{ favorite.description }}</p>
-      <button class="remove-btn" onclick="removeCard(event)">Remove</button>
-    </div>
-    {% endfor %}
-  </main>
-
-  <script>
-
-    function removeCard(event) {
-      event.stopPropagation();
-      var card = event.target.parentNode;
-      var methodName = card.querySelector('h2').innerText;
-      // Send a request to remove the favorite from the database
-      fetch('/remove_favorite', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({method_name : methodName}),
-      })
-      .then(response => {
-        if (response.ok) {
-          // Remove the card from the UI
-          card.parentNode.removeChild(card);
-        } else {
-          console.error('Error removing favorite:', response);
+        * {
+            box-sizing: border-box;
         }
-      })
-      .catch(error => console.error('Error:', error));
-    }
-  </script>
+
+        .navbar {
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .navbar-brand img {
+            max-height: 100%;
+            height: auto;
+            margin-top: 0;
+            display: block;
+            max-width: 150px;
+        }
+
+        .navbar-nav {
+            display: flex;
+            align-items: center;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar-nav .nav-item {
+            margin-right: 20px;
+        }
+
+        .navbar-nav .nav-item .theme-btn {
+            padding: 8px 20px;
+            font-size: 15px;
+            border-radius: 10px;
+            background-color: #00ADB5;
+            color: #fff;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            height: 40px;
+            line-height: 1.2;
+        }
+
+        .navbar-nav .nav-item .theme-btn:hover {
+            cursor: pointer;
+            background-color: #ffffff;
+            transform: translateY(-2px);
+        }
+
+        .navbar-nav .nav-item:last-child {
+            margin-right: 0;
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                height: auto;
+            }
+
+            .navbar-nav {
+                flex-direction: column;
+                margin-top: 10px;
+            }
+
+            .navbar-nav .nav-item {
+                margin-right: 0;
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Preloader -->
+    <div class="preloader">
+        <div class="loader">
+            <div class="ytp-spinner">
+                <div class="ytp-spinner-container">
+                    <div class="ytp-spinner-rotator">
+                        <div class="ytp-spinner-left">
+                            <div class="ytp-spinner-circle"></div>
+                        </div>
+                        <div class="ytp-spinner-right">
+                            <div class="ytp-spinner-circle"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Preloader End -->
+
+    <!-- Header Start -->
+    <header id="home" class="header">
+        <div class="header-wrapper">
+            <div class="header-top theme-bg">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <ul class="header-top-left">
+                                <li><a href="#"><i class="lni lni-phone"></i> +03041234567</a></li>
+                                <li><a href="#"><i class="lni lni-envelope"></i> h2optimize@gmail.com</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-md-4 d-none d-md-block">
+                            <ul class="header-top-right">
+                                <li><a href="#"><i class="lni lni-facebook-filled"></i></a></li>
+                                <li><a href="#"><i class="lni lni-twitter-filled"></i></a></li>
+                                <li><a href="#"><i class="lni lni-linkedin-original"></i></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="navbar-area">
+                <div class="container">
+                    <nav class="navbar navbar-expand-sm">
+                        <a class="navbar-brand" href="index.html">
+                            <img src="static/assets/img/logo/Logo3.png" alt="Logo">
+                        </a>
+                        <div class="collapse navbar-collapse sub-menu-bar" id="navbarSupportedContent">
+                            <ul id="nav" class="navbar-nav ml-auto">
+                                <li class="nav-item active"><a class="page-scroll active" href="#home">Home</a></li>
+                                <li class="nav-item"><a class="page-scroll" href="#about">About</a></li>
+                                <li class="nav-item"><a class="page-scroll" href="#services">Sensors Guide</a></li>
+                                <li class="nav-item"><a class="page-scroll" href="#team">Favorites</a></li>
+                                <li class="nav-item"><a class="page-scroll" href="#contact">Contact</a></li>
+                                <li class="nav-item"><a href="/category" class="btn theme-btn page-scroll">Get Started</a></li>
+                            </ul>
+                        </div>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- Header End -->
+
+    <!-- Main Content -->
+    <div style="width:2700px; height:500px;" class="col-lg-4 col-md-6">
+       <div class="service-item mb-30">
+         <div class="service-icon mb-25">
+            <img src="static/assets/img/bg/idea.png" alt="Water Icon" style="width: 70.285px; height: 58.102px;">
+        </div>
+        <div class="service-content">
+        {% for favorite in favorites %}
+        <div class="card" onclick="goToDetailsPage(this)">
+            <h4>{{ favorite.method_name }}</h4>
+            <a class="read-more" href="#" onclick="removeCard(event)">
+          Remove
+         </a>
+        </div>
+         </div>
+        <div class="service-overlay img-bg">
+        </div>
+       </div>
+      </div>
+
+
+    <script>
+        function removeCard(event) {
+            event.stopPropagation();
+            var card = event.target.parentNode;
+            var methodName = card.querySelector('h2').innerText;
+            fetch('/remove_favorite', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ method_name: methodName }),
+            })
+                .then(response => {
+                    if (response.ok) {
+                        card.parentNode.removeChild(card);
+                    } else {
+                        console.error('Error removing favorite:', response);
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
+    </script>
+
+    <!-- ========================= footer start ========================= -->
+	<footer class="footer pt-100 img-bg" style="background-image:url('static/assets/img/bg/footer-bg.jpg');">
+		<div class="container">
+			<div class="footer-widget-wrapper">
+				<div class="row">
+					<div class="col-xl-4 col-lg-5 col-md-6">
+						<div class="footer-widget mb-30">
+							<a href="index.html" class="logo"><img src="static/assets/img/logo/logo.svg" alt=""></a>
+							<p>Lorem ipsum dolor serit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut
+								labore dolore magna
+								aliquyam erat diam voluptua.</p>
+							<div class="footer-social-links">
+								<ul>
+									<li><a href="#"><i class="lni lni-facebook-filled"></i></a></li>
+									<li><a href="#"><i class="lni lni-twitter-filled"></i></a></li>
+									<li><a href="#"><i class="lni lni-linkedin-original"></i></a></li>
+									<li><a href="#"><i class="lni lni-instagram-original"></i></a></li>
+								</ul>
+							</div>
+						</div>
+					</div>
+					<div class="col-xl-2 col-lg-3 col-md-6">
+						<div class="footer-widget mb-30">
+							<h4>Quick Link</h4>
+							<ul class="footer-links">
+								<li><a href="#">Home</a></li>
+								<li><a href="#">About Us</a></li>
+								<li><a href="#">Solutions</a></li>
+								<li><a href="#">Favorites</a></li>
+								<li><a href="#">Latest News</a></li>
+								<li><a href="#">Contact</a></li>
+							</ul>
+						</div>
+					</div>
+					<div class="col-xl-2 col-lg-3 col-md-5">
+						<div class="footer-widget mb-30">
+							<h4>Quick Link</h4>
+							<ul class="footer-links">
+								<li><a href="#"></a></li>
+								<li><a href="#"></a></li>
+								<li><a href="#"></a></li>
+								<li><a href="#"></a></li>
+								<li><a href="#"></a></li>
+								<li><a href="#"></a></li>
+							</ul>
+						</div>
+					</div>
+					<div class="col-xl-4 col-lg-12 col-md-7">
+						<div class="footer-widget mb-30">
+							<h4>Our Location</h4>
+							<div class="map-canvas">
+								<iframe class="map" id="gmap_canvas"
+									src="https://maps.google.com/maps?q=Mission%20District%2C%20San%20Francisco%2C%20CA%2C%20USA&amp;t=&amp;z=13&amp;ie=UTF8&amp;iwloc=&amp;output=embed"></iframe>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</footer>
+	<!-- ========================= footer end ========================= -->
+
+
+    <!-- JS Scripts -->
+    <script src="static/assets/js/bootstrap.bundle-5.0.0.alpha-min.js"></script>
+    <script src="static/assets/js/wow.min.js"></script>
+    <script src="static/assets/js/tiny-slider.js"></script>
+    <script src="static/assets/js/main.js"></script>
 </body>
+
 </html>

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="no-js" lang="">
+<html class="no-js" lang="" xmlns="http://www.w3.org/1999/html">
  <head>
   <meta charset="utf-8"/>
   <meta content="ie=edge" http-equiv="x-ua-compatible"/>
@@ -225,7 +225,7 @@
     </div>
    </div>
   </div>
-  <!-- preloader end -->
+  <!-- ========================= preloader end =========================-->
   <!-- ========================= header start ========================= -->
   <header class="header" id="home">
    <div class="header-wrapper">
@@ -321,7 +321,7 @@
            </li>
           </ul>
          </div>
-         <!-- navbar collapse -->
+         <!-- ====================== navbar collapse =====================-->
         </nav>
         <!-- navbar -->
        </div>
@@ -532,7 +532,7 @@
             </div>
        </div>
    <!-- ========================= footer end ========================= -->
-       <!-- ========================= JS here ========================= -->
+   <!-- ============================ JS here ========================= -->
    <script src="static/assets/js/bootstrap.bundle-5.0.0.alpha-min.js">
    </script>
    <script src="static/assets/js/wow.min.js">
@@ -562,50 +562,69 @@
             const popup = document.getElementById('popup');
             popup.style.display = 'none';
         }
+      </script>
+   <script>
+    function submitComment(methodName) {
+        const commentInput = document.querySelector(`textarea[data-method="${methodName}"]`);
+        const comment = commentInput.value;
 
-          // Function to show recommendation details
-         function showDetails(index) {
-        // AJAX request to fetch recommendation details
-        $.ajax({
-            url: `/details/${index}`,
-            type: 'GET',
-            success: function(data) {
-                // Update recommendation-details div with fetched details
-                $('#recommendation-details').html(`
-                    <div class="containerd">
-                        <h2>Recommendation: ${data.method_name}</h2>
-                        <ul class="ulstyle" style="text-decoration:none;" >
-                            <h2>Description</h2>
-                            <li><p>${data.description}</p></li>
-                            <h2>Advantage</h2>
-                            <li><p>${data.advantages}</p></li>
-                        </ul>
-                         <div class="icons" style="float: right;">
-                            <button class="heartIcon" onclick="saveFavorite('${data.method_name}', '${data.description}')">❤️</button>
-                            <p style="margin-top: 5px; margin-left: 5px;">Save</p>
-                        </div>
-                        ${data.method_name ? `
-                        <div class="feedback">
-                            <textarea data-method="${data.method_name}" placeholder="Add Comment"></textarea>
-                        </div>
-                        <button class="buttond" onclick="submitComment('${data.method_name}')">Submit</button>
-                        <div class="comment" id="comments-${data.method_name}">
-                            <!-- Existing comments will be displayed here -->
-                        </div>
-                    ` : ''}
-                    </div>
-                `);
-                scrollToDetails();
-                fetchComments(data.method_name);
-
-            },
-            error: function(error) {
-                console.error('Error fetching recommendation details:', error);
-            }
-        });
+        if (comment) {
+            // Save comment in the Firebase database under the correct method name
+            $.ajax({
+                url: `https://h2optimize-3b6cd-default-rtdb.asia-southeast1.firebasedatabase.app/Comments/${methodName}.json`,
+                type: 'POST',
+                data: JSON.stringify(comment),
+                contentType: 'application/json',
+                success: function () {
+                    commentInput.value = ''; // Clear the input
+                    fetchComments(methodName); // Refresh comments
+                }
+            });
+        }
     }
 
-      </script>
+    function fetchComments(methodName) {
+            $.ajax({
+                url: `https://h2optimize-3b6cd-default-rtdb.asia-southeast1.firebasedatabase.app/Comments/${methodName}.json`,
+                type: 'GET',
+                success: function (data) {
+                    const commentsDiv = document.getElementById(`comments-${methodName}`);
+                    commentsDiv.innerHTML = ''; // Clear existing comments
+
+                    if (data) {
+                        Object.values(data).forEach(comment => {
+                            const commentElement = document.createElement('div');
+                            commentElement.textContent = comment;
+                            commentsDiv.appendChild(commentElement);
+                        });
+                    }
+                }
+            });
+        }
+
+        function saveFavorite(methodName, description) {
+            const data = {
+                method_name: methodName,
+                description: description,
+            };
+
+            fetch('/save_favorite', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                displayPopup("Recommendation saved as favorite!");
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+   </script>
       </header>
  </body>
 </html>

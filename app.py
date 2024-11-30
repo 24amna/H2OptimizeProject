@@ -32,7 +32,7 @@ def before_request():
 
 @app.route('/')
 def home():
-    return render_template('category_updated.html')
+    return render_template('saved.html')
 
 
 @app.route('/goToIndus')
