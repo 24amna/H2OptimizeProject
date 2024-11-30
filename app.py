@@ -32,7 +32,7 @@ def before_request():
 
 @app.route('/')
 def home():
-    return render_template('Sign-in.html')
+    return render_template('category_updated.html')
 
 
 @app.route('/goToIndus')
@@ -217,6 +217,12 @@ def recommend():
         dt_result = request.form['dt_result']
         predicted_methods = predict_and_display_methods(dt_result)
 
+        images = [
+            'static/assets/img/bg/element.png',
+            'static/assets/img/bg/hose.png',
+            'static/assets/img/bg/water.png'
+        ]
+
         recommendations = []
         for method in predicted_methods:
             method_details = data[data['Method Name'] == method]
@@ -228,22 +234,46 @@ def recommend():
                 'advantages': advantages
             })
 
+        recommendations_with_images = zip(recommendations, images)
+
         session['recommendations'] = recommendations
 
-        return render_template('recommends_fixed.html', recommendations=recommendations, dt_result=dt_result, committed=True)
+        return render_template('recommends_fixed.html', recommendations_with_images=recommendations_with_images, dt_result=dt_result, committed=True)
 
     return render_template('recommends_fixed.html')
 
 
-@app.route('/details/<int:index>')
-def details(index):
+@app.route('/save_recommendation', methods=['POST'])
+def save_recommendation():
+    data = request.get_json()
+    index = data.get('index')
+    print(f"Received index: {index}")
+
+    # Check and save recommendation
     recommendations = session.get('recommendations', [])
+    print(f"Session recommendations: {recommendations}")
+    if 0 <= index < len(recommendations):
+        session['selected_recommendation'] = recommendations[index]
+        print(f"Selected recommendation: {session['selected_recommendation']}")
+    else:
+        print("Invalid index or recommendations not available.")  # Debug: Handle error case
 
-    if 1 <= index <= len(recommendations):
-        selected_recommendation = recommendations[index - 1]
-        return jsonify(selected_recommendation)
+    return jsonify({"message": "Recommendation saved to session"}), 200
 
-    return jsonify({'error': 'Invalid recommendation index or recommendations not found'})
+
+@app.route('/details')
+def details():
+    selected_recommendation = session.get('selected_recommendation')
+    print(f"Selected recommendation in details: {selected_recommendation}")  # Debug
+
+    if selected_recommendation:
+        return render_template(
+            'details.html',
+            method_name=selected_recommendation.get('method_name'),
+            description=selected_recommendation.get('description')
+        )
+    else:
+        return render_template('details.html', error="No recommendation selected.")
 
 
 @app.route('/classifyIndustrial', methods=['POST'])

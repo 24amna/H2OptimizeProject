@@ -8,7 +8,7 @@
   </title>
   <meta content="" name="description"/>
   <meta content="width=device-width, initial-scale=1" name="viewport"/>
-  <link rel="icon" type="image/png" href="static/images/logo-removebg.png">
+  <link rel="icon" type="image/png" href="static/images/logoDrop-rb.png">
 
   <link href="static/assets/css/bootstrap-5.0.5-alpha.min.css" rel="stylesheet"/>
   <link href="static/assets/css/LineIcons.2.0.css" rel="stylesheet"/>
@@ -215,105 +215,57 @@
     <!-- navbar area -->
    </div>
    <!--========================= service-section start ========================= -->
-   <section class="service-section pt-150" id="services">
+<section class="service-section pt-150" id="services">
     <div class="shape shape-3">
-     <img alt="" src="static/assets/img/shapes/shape-3.svg"/>
+        <img alt="" src="static/assets/img/shapes/shape-3.svg" />
     </div>
     <div class="container">
-     <div class="row">
-      <div class="col-xl-8 mx-auto">
-       <div class="section-title text-center mb-55">
-        <span class="wow fadeInDown" data-wow-delay=".2s">
-         Solutions
-        </span>
-        <h2 class="mb-15 wow fadeInUp" data-wow-delay=".4s">
-         Recommended Solutions for You
-        </h2>
-        <p class="wow fadeInUp" data-wow-delay=".6s">
-         Save water, save life. Every drop counts
-         <br class="d-none d-lg-block"/>
-
-        </p>
-       </div>
-      </div>
-     </div>
-     <div class="row">
-      <div class="col-lg-4 col-md-6">
-       <div class="service-item mb-30">
-         <div class="service-icon mb-25">
-            <img src="static/assets/img/bg/element.png" alt="Water Icon" style="width: 70.285px; height: 58.102px;">
+        <div class="row">
+            <div class="col-xl-8 mx-auto">
+                <div class="section-title text-center mb-55">
+                    <span class="wow fadeInDown" data-wow-delay=".2s">
+                        Solutions
+                    </span>
+                    <h2 class="mb-15 wow fadeInUp" data-wow-delay=".4s">
+                        Recommended Solutions for You
+                    </h2>
+                    <p class="wow fadeInUp" data-wow-delay=".6s">
+                        Save water, save life. Every drop counts
+                        <br class="d-none d-lg-block" />
+                    </p>
+                </div>
+            </div>
         </div>
-        <div class="service-content">
-
-         <h4>
-          {{ recommendations[0].method_name }}
-         </h4>
-         <p>
-          {{ recommendations[0].advantages }}
-         </p>
-         <a class="read-more" href="#" onclick="gotodetails()">
-          Read More
-          <i class="lni lni-arrow-right">
-          </i>
-         </a>
-
+        <div class="row">
+            <!-- Iterate over the combined recommendations and images -->
+            {% for recommendation, image in recommendations_with_images %}
+            <div class="col-lg-4 col-md-6">
+                <div class="service-item mb-30">
+                    <div class="service-icon mb-25">
+                        <!-- Dynamically assign the image for each recommendation -->
+                        <img src="{{ image }}" alt="Water Icon" style="width: 70.285px; height: 58.102px;">
+                    </div>
+                    <div class="service-content">
+                        <h4>
+                            {{ recommendation.method_name }}
+                        </h4>
+                        <p>
+                            {{ recommendation.advantages }}
+                        </p>
+                        <!-- Pass the index dynamically in the URL -->
+                        <a href="{{ url_for('details') }}" class="read-more" onclick="saveToSession({{ loop.index0 }})">
+                            Read More
+                            <i class="lni lni-arrow-right"></i>
+                        </a>
+                    </div>
+                    <div class="service-overlay img-bg"></div>
+                </div>
+            </div>
+            {% endfor %}
         </div>
-        <div class="service-overlay img-bg">
-        </div>
-       </div>
-      </div>
-      <div class="col-lg-4 col-md-6">
-       <div class="service-item mb-30">
-         <div class="service-icon mb-25">
-            <img src="static/assets/img/bg/hose.png" alt="Water Icon" style="width: 70.285px; height: 58.102px;">
-        </div>
-        <div class="service-content">
-
-         <h4>
-          {{ recommendations[1].method_name }}
-         </h4>
-         <p>
-          {{ recommendations[1].advantages }}
-         </p>
-         <a class="read-more" href="#" onclick="gotodetails()">
-          Read More
-          <i class="lni lni-arrow-right">
-          </i>
-         </a>
-
-        </div>
-        <div class="service-overlay img-bg">
-        </div>
-       </div>
-      </div>
-      <div class="col-lg-4 col-md-6">
-       <div class="service-item mb-30">
-         <div class="service-icon mb-25">
-            <img src="static/assets/img/bg/water.png" alt="Water Icon" style="width: 70.285px; height: 58.102px;">
-         </div>
-        <div class="service-content">
-
-         <h4>
-          {{ recommendations[2].method_name }}
-         </h4>
-         <p>
-          {{ recommendations[2].advantages }}
-         </p>
-         <a class="read-more" href="#" onclick="gotodetails()">
-          Read More
-          <i class="lni lni-arrow-right">
-          </i>
-         </a>
-
-        </div>
-        <div class="service-overlay img-bg">
-        </div>
-       </div>
-      </div>
-     </div>
     </div>
-   </section>
-   <!--========================= service-section end ========================= -->
+</section>
+
    <!-- ========================= footer start ========================= -->
    <footer class="footer pt-100 img-bg" style="background-image:url('static/assets/img/bg/footer-bg.jpg');">
     <div class="container">
@@ -467,6 +419,28 @@
    </script>
    <script src="static/assets/js/main.js">
    </script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+   <script>
+    function saveToSession(index) {
+    // Save the selected recommendation's index to the session using AJAX
+    $.ajax({
+        url: '/save_recommendation',
+        type: 'POST',
+        data: JSON.stringify({ index: index }),
+        contentType: 'application/json',
+        success: function(response) {
+            console.log('Recommendation saved to session:', response); // Debug
+            // Redirect to the details page
+            window.location.href = "/details";
+        },
+        error: function(error) {
+            console.error('Error saving recommendation to session', error); // Debug
+        }
+    });
+}
+
+    </script>
   </header>
  </body>
 </html>
