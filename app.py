@@ -1,6 +1,11 @@
 import pickle
 from flask import jsonify, make_response
 from flask import Flask, render_template, request, redirect, url_for, session
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from apscheduler.schedulers.background import BackgroundScheduler
+import random
 import firebase_admin
 from firebase_admin import credentials, auth, db
 import pandas as pd
@@ -32,7 +37,7 @@ def before_request():
 
 @app.route('/')
 def home():
-    return render_template('saved.html')
+    return render_template('Sign-in.html')
 
 
 @app.route('/goToIndus')
@@ -42,7 +47,7 @@ def goToIndus():
 
 @app.route('/goToIndex')
 def goToIndex():
-    return render_template('index.html')
+    return render_template('index_t.html')
 
 
 @app.route('/goToGuide')
@@ -87,6 +92,7 @@ def goToFav():
 @app.route('/remove_favorite', methods=['POST'])
 def remove_favorite():
     try:
+        # Authenticate user
         id_token = request.cookies.get('idToken')
         if not id_token:
             return jsonify({'error': 'User not authenticated'}), 401
@@ -94,26 +100,20 @@ def remove_favorite():
         decoded_token = auth.verify_id_token(id_token)
         uid = decoded_token['uid']
 
+        # Extract data
         method_name = request.json.get('method_name')
-
         if not method_name:
-            return jsonify({'error': 'Invalid data'}), 400
+            return jsonify({'error': 'Invalid data: Missing method_name'}), 400
 
-        # Reference to the user's favorites
+        # Reference user's favorites
         favorites_ref = db.reference(f'users/{uid}/favorites')
-
-        # Retrieve all favorites
-        favorites = favorites_ref.get()
+        favorites = favorites_ref.get() or {}
 
         # Find the key of the favorite to remove
-        favorite_key = None
-        for key, value in favorites.items():
-            if value.get('method_name') == method_name:
-                favorite_key = key
-                break
+        favorite_key = next((key for key, value in favorites.items() if value.get('method_name') == method_name), None)
 
         if favorite_key:
-            # Remove the favorite from the database
+            # Remove the favorite
             favorites_ref.child(favorite_key).delete()
             return jsonify({'message': 'Favorite removed successfully'}), 200
         else:
@@ -170,15 +170,21 @@ def signout():
     return response
 
 
-@app.route('/category')
-def category():
+@app.route('/users')
+def users():
     print("route accessed")
     return render_template('users.html')
 
 
+@app.route('/category')
+def category():
+    print("route accessed")
+    return render_template('category_updated.html')
+
+
 @app.route('/index')
 def index():
-    return render_template('index.html')
+    return render_template('index_t.html')
 
 
 @app.route('/indus')
@@ -325,9 +331,36 @@ def detailsIndus(index):
     return jsonify({'error': 'Invalid recommendation industrial or recommendations not found'})
 
 
+# @app.route('/save_favorite', methods=['POST'])
+# def save_favorite():
+#     try:
+#         id_token = request.cookies.get('idToken')
+#         if not id_token:
+#             return jsonify({'error': 'User not authenticated'}), 401
+#
+#         decoded_token = auth.verify_id_token(id_token)
+#         uid = decoded_token['uid']
+#
+#         favorite_data = request.json
+#         method_name = favorite_data.get('method_name')
+#         description = favorite_data.get('description')
+#
+#         if not method_name or not description:
+#             return jsonify({'error': 'Invalid data'}), 400
+#
+#         # Save the favorite under the user's ID in the database
+#         db.reference(f'users/{uid}/favorites').push({
+#             'method_name': method_name,
+#             'description': description
+#         })
+#
+#         return jsonify({'message': 'Favorite saved successfully'}), 200
+#     except Exception as e:
+#         return jsonify({'error': str(e)}), 500
 @app.route('/save_favorite', methods=['POST'])
 def save_favorite():
     try:
+        # Authenticate user
         id_token = request.cookies.get('idToken')
         if not id_token:
             return jsonify({'error': 'User not authenticated'}), 401
@@ -335,15 +368,24 @@ def save_favorite():
         decoded_token = auth.verify_id_token(id_token)
         uid = decoded_token['uid']
 
+        # Extract data
         favorite_data = request.json
         method_name = favorite_data.get('method_name')
         description = favorite_data.get('description')
 
         if not method_name or not description:
-            return jsonify({'error': 'Invalid data'}), 400
+            return jsonify({'error': 'Invalid data: Missing method_name or description'}), 400
 
-        # Save the favorite under the user's ID in the database
-        db.reference(f'users/{uid}/favorites').push({
+        # Reference user's favorites
+        favorites_ref = db.reference(f'users/{uid}/favorites')
+        existing_favorites = favorites_ref.get() or {}
+
+        # Check for duplicates
+        if any(fav.get('method_name') == method_name for fav in existing_favorites.values()):
+            return jsonify({'error': 'Favorite already exists'}), 409
+
+        # Save the favorite
+        favorites_ref.push({
             'method_name': method_name,
             'description': description
         })

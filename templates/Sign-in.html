@@ -298,7 +298,7 @@
                     document.cookie = `idToken=${idToken};path=/;max-age=3600`;
 
                     // Redirect to home or category page
-                    window.location.href = '/category';
+                    window.location.href = '/users';
                 });
             })
             .catch((error) => {
@@ -308,7 +308,7 @@
 
 
         function redirectToHome() {
-            window.location.href = "/category";
+            window.location.href = "/users";
         }
 
 

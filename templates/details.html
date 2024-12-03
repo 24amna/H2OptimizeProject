@@ -378,11 +378,22 @@
           <i class="lni lni-arrow-right">
           </i>
          </a>
+         <div class="icons" style="margin-bottom: 50px; float: right; width: 30px; height: 30px;">
+           <button
+             class="heartIcon"
+             style="background: none; border: none; padding: 0;"
+             onclick="toggleFavorite('{{ method_name }}', '{{ description }}', this)">
+             <img src="static/assets/img/bg/heart.png" alt="Heart Icon" style="width: 100%; height: auto;">
+           </button>
+           <p style="margin-top: 5px; cursor: pointer;">Save</p>
+         </div>
+
          </div>
         <div class="service-overlay img-bg">
         </div>
        </div>
       </div>
+
      </div>
     </div>
    </section>
@@ -602,27 +613,56 @@
             });
         }
 
-        function saveFavorite(methodName, description) {
-            const data = {
-                method_name: methodName,
-                description: description,
-            };
+        function toggleFavorite(methodName, description, buttonElement) {
+            const imgElement = buttonElement.querySelector('img');
+            const textElement = buttonElement.nextElementSibling;
 
-            fetch('/save_favorite', {
+            // Determine if the item is being added or removed
+            const isSaving = imgElement.src.includes('heart.png');
+
+            if (isSaving) {
+              // Save to favorites
+              const data = { method_name: methodName, description: description };
+
+              fetch('/save_favorite', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data),
+              })
+                .then((response) => response.json())
+                .then(() => {
+                  imgElement.src = 'static/assets/img/bg/heartfill.png';
+                  textElement.textContent = 'Saved';
+                })
+                .catch((error) => console.error('Error saving favorite:', error));
+            } else {
+              // Remove from favorites
+              fetch(`/remove_favorite/${methodName}`, { method: 'DELETE' })
+                .then(() => {
+                  imgElement.src = 'static/assets/img/bg/heart.png';
+                  textElement.textContent = 'Save';
+                })
+                .catch((error) => console.error('Error removing favorite:', error));
+            }
+          }
+
+        document.addEventListener('DOMContentLoaded', () => {
+          fetch('/get_user_favorites')
+            .then((response) => response.json())
+            .then((favorites) => {
+              favorites.forEach((fav) => {
+                const buttonElement = document.querySelector(`button[onclick*="'${fav.method_name}'"]`);
+                if (buttonElement) {
+                  const imgElement = buttonElement.querySelector('img');
+                  const textElement = buttonElement.nextElementSibling;
+
+                  imgElement.src = 'static/assets/img/bg/heartfill.png';
+                  textElement.textContent = 'Saved';
+                }
+              });
             })
-            .then(response => response.json())
-            .then(data => {
-                displayPopup("Recommendation saved as favorite!");
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-        }
+            .catch((error) => console.error('Error loading favorites:', error));
+        });
 
    </script>
       </header>
