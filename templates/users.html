@@ -85,5 +85,60 @@
             window.location.href = '/indus';
         };
     </script>
+    <script>
+    document.getElementById('homeCard').onclick = function() {
+        fetch('/set_category', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ category: 'home' })
+        }).then(response => {
+            if (response.ok) {
+                window.location.href = '/index';
+            } else {
+                alert('Error setting category');
+            }
+        });
+    };
+
+    document.getElementById('industrialCard').onclick = function() {
+        fetch('/set_category', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ category: 'industrial' })
+        }).then(response => {
+            if (response.ok) {
+                window.location.href = '/indus';
+            } else {
+                alert('Error setting category');
+            }
+        });
+    };
+
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('/get_user_category', {
+                method: 'GET',
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.category) {
+                    // Redirect immediately if category is set
+                    if (data.category === 'home') {
+                        window.location.href = '/index';
+                    } else if (data.category === 'industrial') {
+                        window.location.href = '/indus';
+                    }
+                }
+            })
+            .catch(err => {
+                console.error('Error checking category:', err);
+            });
+        });
+
+    </script>
+
 </body>
 </html>

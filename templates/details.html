@@ -187,6 +187,49 @@
             margin-top: 30px;
         }
 
+    .close {
+        border: none;
+        background: none;
+        font-size: 1.5rem;
+        color: #000;
+    }
+
+    .comments-section {
+        padding: 15px;
+        background-color: #f9f9f9;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .comment {
+        margin-bottom: 10px;
+        padding: 10px;
+        border-radius: 5px;
+        background-color: #e9ecef;
+    }
+
+    .comment-username {
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+    .comment-section {
+        padding: 15px;
+        background-color: #f9f9f9;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .comments-section .comment {
+        margin-bottom: 10px;
+        padding: 10px;
+        border-radius: 5px;
+        background-color: #e9ecef;
+    }
+
+    .comments-section .comment-username {
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
 
 @media (max-width: 768px) {
     .navbar {
@@ -373,19 +416,19 @@
          {% else %}
              <p>{{ error or "No recommendation details available." }}</p>
          {% endif %}
-         <a class="read-more" href="#" onclick="gotodetails()">
-          Add Comment
-          <i class="lni lni-arrow-right">
-          </i>
-         </a>
+             <a class="read-more" href="javascript:void(0);" onclick="toggleCommentSection('{{ method_name }}')">
+                 Add Comment
+                 <i class="lni lni-arrow-right"></i>
+             </a>
+
          <div class="icons" style="margin-bottom: 50px; float: right; width: 30px; height: 30px;">
            <button
              class="heartIcon"
              style="background: none; border: none; padding: 0;"
              onclick="toggleFavorite('{{ method_name }}', '{{ description }}', this)">
-             <img src="static/assets/img/bg/heart.png" alt="Heart Icon" style="width: 100%; height: auto;">
+             <img onclick="toggleFavorite('{{ method_name }}', '{{ description }}', this)" src="static/assets/img/bg/heart.png" alt="Heart Icon" style="width: 100%; height: auto;">
            </button>
-           <p style="margin-top: 5px; cursor: pointer;">Save</p>
+           <p onclick="toggleFavorite('{{ method_name }}', '{{ description }}', this)" style="margin-top: 5px; margin-right:2px; cursor: pointer;">Save</p>
          </div>
 
          </div>
@@ -399,6 +442,22 @@
    </section>
     <!-- ========================= Main Card end ========================= -->
 
+
+    <!-- ========================= Comment Section Modal ================= -->
+   <div id="comment-section-{{ method_name }}" class="comment-section" style="display: none; margin-top: 20px;">
+        <h5>Leave a Comment:</h5>
+        <textarea id="commentInput-{{ method_name }}" placeholder="Write your comment here..." rows="3" style="width: 100%;"></textarea>
+        <button class="btn btn-primary" onclick="submitComment('{{ method_name }}')">Submit Comment</button>
+    </div>
+    <!-- ========================= Comment Section Modal ================= -->
+
+    <!-- ============== Comments Display Section ========================= -->
+
+    <div id="comments-{{ method_name }}" class="comments-section" style="margin-top: 20px;">
+
+        <!-- Comments load here -->
+    </div>
+    <!-- ============== Comments Display Section ========================= -->
 
        <div id="recommendation-details"></div>
       <!-- ========================= footer start ========================= -->
@@ -560,6 +619,7 @@
    </script>
    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js">
    </script>
+   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
       <script>
           //Handling Pop-up functions
          function displayPopup(message) {
@@ -575,96 +635,194 @@
         }
       </script>
    <script>
-    function submitComment(methodName) {
-        const commentInput = document.querySelector(`textarea[data-method="${methodName}"]`);
-        const comment = commentInput.value;
-
-        if (comment) {
-            // Save comment in the Firebase database under the correct method name
-            $.ajax({
-                url: `https://h2optimize-3b6cd-default-rtdb.asia-southeast1.firebasedatabase.app/Comments/${methodName}.json`,
-                type: 'POST',
-                data: JSON.stringify(comment),
-                contentType: 'application/json',
-                success: function () {
-                    commentInput.value = ''; // Clear the input
-                    fetchComments(methodName); // Refresh comments
-                }
-            });
-        }
-    }
-
-    function fetchComments(methodName) {
-            $.ajax({
-                url: `https://h2optimize-3b6cd-default-rtdb.asia-southeast1.firebasedatabase.app/Comments/${methodName}.json`,
-                type: 'GET',
-                success: function (data) {
-                    const commentsDiv = document.getElementById(`comments-${methodName}`);
-                    commentsDiv.innerHTML = ''; // Clear existing comments
-
-                    if (data) {
-                        Object.values(data).forEach(comment => {
-                            const commentElement = document.createElement('div');
-                            commentElement.textContent = comment;
-                            commentsDiv.appendChild(commentElement);
-                        });
-                    }
-                }
-            });
-        }
 
         function toggleFavorite(methodName, description, buttonElement) {
-            const imgElement = buttonElement.querySelector('img');
-            const textElement = buttonElement.nextElementSibling;
+              const imgElement = buttonElement.querySelector('img');
+              const textElement = buttonElement.nextElementSibling;
 
-            // Determine if the item is being added or removed
-            const isSaving = imgElement.src.includes('heart.png');
+              // Determine if the item is being added or removed
+              const isSaving = imgElement.src.includes('heart.png');
 
-            if (isSaving) {
-              // Save to favorites
-              const data = { method_name: methodName, description: description };
+              if (isSaving) {
+                  // Save to favorites
+                  const data = {
+                      method_name: methodName,
+                      description: description
+                  };
 
-              fetch('/save_favorite', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data),
-              })
-                .then((response) => response.json())
-                .then(() => {
-                  imgElement.src = 'static/assets/img/bg/heartfill.png';
-                  textElement.textContent = 'Saved';
-                })
-                .catch((error) => console.error('Error saving favorite:', error));
-            } else {
-              // Remove from favorites
-              fetch(`/remove_favorite/${methodName}`, { method: 'DELETE' })
-                .then(() => {
-                  imgElement.src = 'static/assets/img/bg/heart.png';
-                  textElement.textContent = 'Save';
-                })
-                .catch((error) => console.error('Error removing favorite:', error));
-            }
+                  console.log("Saving favorite:", data);  // Log the data being sent
+
+                  fetch('/save_favorite', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify(data),
+                  })
+                  .then((response) => response.json())
+                  .then((data) => {
+                      if (data.message) {
+                          displayPopup(data.message);  // Show success message
+                          console.log('Favorite saved:', data.message);
+                      } else {
+                          displayPopup('An error occurred while saving the favorite.');
+                      }
+
+                      // Update heart icon and text
+                      imgElement.src = 'static/assets/img/bg/heartfill.png';
+                      textElement.textContent = 'Saved';
+                  })
+                  .catch((error) => {
+                      console.error('Error saving favorite:', error);
+                      displayPopup('An error occurred while saving the favorite.');
+                  });
+              } else {
+                  // Remove from favorites
+                  const data = { method_name: methodName };
+
+                  fetch('/remove_favorite', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify(data),
+                  })
+                  .then(() => {
+                      // Update heart icon and text
+                      imgElement.src = 'static/assets/img/bg/heart.png';
+                      textElement.textContent = 'Save';
+
+                      displayPopup('Favorite removed.');
+                  })
+                  .catch((error) => {
+                      console.error('Error removing favorite:', error);
+                      displayPopup('An error occurred while removing the favorite.');
+                  });
+              }
           }
 
-        document.addEventListener('DOMContentLoaded', () => {
-          fetch('/get_user_favorites')
-            .then((response) => response.json())
-            .then((favorites) => {
-              favorites.forEach((fav) => {
-                const buttonElement = document.querySelector(`button[onclick*="'${fav.method_name}'"]`);
-                if (buttonElement) {
-                  const imgElement = buttonElement.querySelector('img');
-                  const textElement = buttonElement.nextElementSibling;
+          function displayPopup(message) {
+              const popup = document.createElement('div');
+              popup.style.position = 'fixed';
+              popup.style.bottom = '20px';
+              popup.style.right = '20px';
+              popup.style.backgroundColor = '#4CAF50';
+              popup.style.color = '#fff';
+              popup.style.padding = '15px';
+              popup.style.borderRadius = '5px';
+              popup.style.boxShadow = '0 4px 6px rgba(0,0,0,0.1)';
+              popup.style.zIndex = '1000';
+              popup.textContent = message;
 
-                  imgElement.src = 'static/assets/img/bg/heartfill.png';
-                  textElement.textContent = 'Saved';
-                }
-              });
-            })
-            .catch((error) => console.error('Error loading favorites:', error));
-        });
+              document.body.appendChild(popup);
+
+              // Remove popup after 3 seconds
+              setTimeout(() => {
+                  popup.remove();
+              }, 3000);
+          }
+
+
+
+       document.querySelectorAll('.heartIcon').forEach(button => {
+               button.addEventListener('click', function() {
+                   const methodName = this.getAttribute('data-method-name');
+                   const description = this.getAttribute('data-description');
+                   toggleFavorite(methodName, description, this);
+               });
+           });
+
 
    </script>
+  <script>
+        // Toggle comment section visibility
+        function toggleCommentSection(methodName) {
+            const commentSection = document.getElementById(`comment-section-${methodName}`);
+            if (commentSection) {
+                commentSection.style.display = commentSection.style.display === 'none' ? 'block' : 'none';
+            }
+        }
+
+        // Submit a comment (updated)
+        function submitComment(methodName) {
+            const commentInput = document.getElementById(`commentInput-${methodName}`);
+            const comment = commentInput.value.trim();
+
+            if (comment) {
+                const commentId = new Date().toISOString(); // Use a unique timestamp as the comment ID
+
+                const payload = JSON.stringify({ comment: comment });  // Only send the comment, without username
+
+                const url = `https://h2optimize-3b6cd-default-rtdb.asia-southeast1.firebasedatabase.app/Comments/${methodName}/${commentId}.json`;
+
+                console.log("Submitting comment to:", url); // Log the request URL
+                console.log("Payload:", payload);           // Log the payload being sent
+
+                fetch(url, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: payload,
+                })
+                .then(response => {
+                    console.log("Response Status:", response.status); // Log the response status
+                    return response.json().then(data => {
+                        if (response.ok) {
+                            console.log("Comment submitted successfully:", data);
+                            commentInput.value = ''; // Clear the input field
+                            fetchComments(methodName); // Refresh comments
+                        } else {
+                            console.error("Error response from server:", data);
+                            alert('Error submitting comment: ' + (data.error || 'Unknown error.'));
+                        }
+                    });
+                })
+                .catch(error => {
+                    console.error("Network or server error:", error);
+                    alert('Error submitting comment. Please check your network connection.');
+                });
+            } else {
+                alert('Please write a comment before submitting.');
+            }
+        }
+
+        // Fetch comments (updated)
+        function fetchComments(methodName) {
+            fetch(`https://h2optimize-3b6cd-default-rtdb.asia-southeast1.firebasedatabase.app/Comments/${methodName}.json`, {
+                method: 'GET'
+            })
+            .then(response => response.json())
+            .then(data => {
+                const commentsDiv = document.getElementById(`comments-${methodName}`);
+                commentsDiv.innerHTML = ''; // Clear existing comments
+
+                if (data) {
+                    // Loop through the comments and display them
+                    Object.keys(data).forEach(commentId => {
+                        const { comment } = data[commentId];
+
+                        const commentElement = document.createElement('div');
+                        commentElement.className = 'comment';
+
+                        // Create the comment text element dynamically
+                        const commentTextElement = document.createElement('p');
+                        commentTextElement.textContent = comment; // Display the comment
+
+                        commentElement.appendChild(commentTextElement);
+
+                        commentsDiv.appendChild(commentElement);
+                    });
+                } else {
+                    commentsDiv.innerHTML = '<p>No comments yet. Be the first to comment!</p>';
+                }
+            })
+            .catch(() => alert('Error fetching comments.'));
+        }
+    </script>
+    <script>
+    // Store the idToken passed from Flask into a JavaScript variable
+    const idToken = "{{ id_token }}";  // This is injected from Flask
+    console.log('Received idToken:', idToken);  // Optional: Check if the token is passed correctly
+
+    // You can now use this idToken in your API requests to Firebase
+    </script>
+
+
       </header>
  </body>
 </html>

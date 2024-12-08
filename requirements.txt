@@ -14,3 +14,4 @@ blinker~=1.8.2
 itsdangerous~=2.2.0
 joblib~=1.4.2
 requests~=2.31.0
+APScheduler~=3.11.0

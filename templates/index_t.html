@@ -72,8 +72,61 @@
 .navbar-nav .nav-item:last-child {
     margin-right: 0;
 }
+    .modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 1050;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .modal-dialog {
+        max-width: 500px;
+        margin: auto;
+    }
+    .modal-content {
+        background-color: #fff;
+        border-radius: 5px;
+        overflow: hidden;
+        box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
+        animation: fadeIn 0.3s ease-out;
+    }
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem;
+        border-bottom: 1px solid #dee2e6;
+    }
+    .modal-body {
+        padding: 1rem;
+    }
+    .modal-footer {
+        display: flex;
+        justify-content: flex-end;
+        padding: 0.75rem;
+        border-top: 1px solid #dee2e6;
+    }
+    .close {
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+    }
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
 
-@media (max-width: 768px) {
+	@media (max-width: 768px) {
     .navbar {
         height: auto;
     }
@@ -85,7 +138,8 @@
         margin-right: 0;
         margin-bottom: 10px;
     }
-}
+    }
+
 
 
 </style>
@@ -124,7 +178,7 @@
 								<div class="header-top-left text-center text-md-left">
 									<ul>
 										<li><a href="#"><i class="lni lni-phone"></i> +03041234567</a></li>
-										<li><a href="#"><i class="lni lni-envelope"></i> h2optimize@gmail.com</a></li>
+										<li><a href="#"><i class="lni lni-envelope"></i> h2optimizecommunity@gmail.com</a></li>
 									</ul>
 								</div>
 							</div>
@@ -165,10 +219,10 @@
 												<a class="page-scroll" href="#team">Favorites</a>
 											</li>
 											<li class="nav-item">
-												<a class="page-scroll" href="#contact">Contact</a>
+												<a class="page-scroll" href="/signout">Sign Out</a>
 											</li>
 											<li class="nav-item">
-												<a href="/category" class="btn theme-btn page-scroll" data-animation="fadeInUp" data-duration="1.5s"
+												<a onclick="window.location='/category';" class="btn theme-btn page-scroll" data-animation="fadeInUp" data-duration="1.5s"
 											data-delay=".9s">Get Started</a>
 											</li>
 
@@ -214,8 +268,8 @@
 											dolor sit amet, consetetur sadipscing elitr, sed dinonumy eirmod tempor invidunt
 											ut labore et dolore magna aliquyam erat. Lorem ipsum dolor sit amet, consetetur
 											sadipscing elitr.</p>
-										<a href="/category" class="btn theme-btn page-scroll" data-animation="fadeInUp" data-duration="1.5s"
-											data-delay=".9s" onclick="/category">Get Started</a>
+										<a onclick="window.location='/category';" class="btn theme-btn page-scroll" data-animation="fadeInUp" data-duration="1.5s"
+											data-delay=".9s" >Get Started</a>
 									</div>
 								</div>
 							</div>
@@ -305,7 +359,7 @@
 									Had to Share</a></h4>
 							<p>Lorem ipsum dolor sirtewt amertse consetetur sadipscing elitr, sedqw dinoumy eirmod tempor invidunt
 								sedrsu.</p>
-							<a class="read-more" href="#">Read More <i class="lni lni-arrow-right"></i></a>
+							<a class="read-more" href="https://www.worldwildlife.org/threats/water-scarcity" target="_blank">Read More <i class="lni lni-arrow-right"></i></a>
 						</div>
 					</div>
 				</div>
@@ -318,7 +372,7 @@
 							<h4><a href="#">100+ Medical Tips We Just Had to Share</a></h4>
 							<p>Lorem ipsum dolor sirtewt amertse consetetur sadipscing elitr, sedqw dinoumy eirmod tempor invidunt
 								sedrsu.</p>
-							<a class="read-more" href="#">Read More <i class="lni lni-arrow-right"></i></a>
+							<a class="read-more" href="https://www.concern.net/news/countries-with-water-stress-and-scarcity" target="_blank">Read More <i class="lni lni-arrow-right"></i></a>
 						</div>
 					</div>
 				</div>
@@ -331,7 +385,7 @@
 							<h4><a href="#">250+ Medical Tips We Just Had to Share</a></h4>
 							<p>Lorem ipsum dolor sirtewt amertse consetetur sadipscing elitr, sedqw dinoumy eirmod tempor invidunt
 								sedrsu.</p>
-							<a class="read-more" href="#">Read More <i class="lni lni-arrow-right"></i></a>
+							<a class="read-more" href="https://earth.org/causes-and-effects-of-water-shortage/" target="_blank">Read More <i class="lni lni-arrow-right"></i></a>
 						</div>
 					</div>
 				</div>
@@ -500,8 +554,8 @@
 			<div class="row">
 				<div class="col-xl-8">
 					<div class="subscribe-wrapper">
-						<form action="#" class="subscribe-from">
-							<input type="text" name="subscribe" id="subscribe" placeholder="Enter Your Email">
+						<form id="subscribeForm" action="/subscribe" class="subscribe-from" method="POST" onsubmit="handleSubscription(event)">
+							<input id="subscribe" name="email" placeholder="Enter Your Email" type="text"/>
 							<button class="btn theme-btn">Subscribe</button>
 						</form>
 						<div class="support d-flex">
@@ -537,6 +591,26 @@
 		</div>
 	</section>
 	<!-- ========================= subscribe-section end ========================= -->
+	<!-- ========================= Modal Structure ============================ -->
+	<div id="subscriptionModal" class="modal" tabindex="-1" role="dialog" style="display: none;">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Subscription Status</h5>
+					<button type="button" class="close" onclick="closeModal()" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<p id="subscriptionMessage">Subscription successful!</p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" onclick="closeModal()">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- ============================ Modal Structure ========================== -->
 	<br>
 	<br>
 	<br>
@@ -653,6 +727,22 @@
 	<script src="static/assets/js/wow.min.js"></script>
 	<script src="static/assets/js/tiny-slider.js"></script>
 	<script src="static/assets/js/main.js"></script>
+    <script>
+    function handleSubscription(event) {
+        event.preventDefault(); // Prevent the default form submission
+
+        // Simulate a successful subscription response
+        const response = { message: 'Subscription successful!' };
+
+        // Display the response in the modal
+        document.getElementById('subscriptionMessage').innerText = response.message;
+        document.getElementById('subscriptionModal').style.display = 'block';
+    }
+
+    function closeModal() {
+        document.getElementById('subscriptionModal').style.display = 'none';
+    }
+    </script>
 </body>
 
 </html>
