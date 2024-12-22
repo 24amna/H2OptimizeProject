@@ -234,11 +234,11 @@
 <body>
     <div class="container">
         <div class="form-container sign-in-container">
-            <form action="#" onsubmit="signIn(event)">
+            <form id="signInForm" action="/signin" method="POST" onsubmit="signIn(event)">
                 <h1>Sign in</h1>
-                <input type="email" placeholder="Email" id="signInEmail">
+                <input type="email" placeholder="Email" id="signInEmail" name="email">
                 <div class="password-container">
-                    <input type="password" placeholder="Password" id="signInPassword">
+                    <input type="password" placeholder="Password" id="signInPassword" name="password">
                     <span class="show-hide" onclick="togglePasswordVisibility()">🔐</span>
                 </div>
                 <a href="#" onclick="resetPassword()">Forgot your password?</a>
@@ -272,6 +272,7 @@
             apiKey: "AIzaSyAJuqq_PNBiWO9BctboH_-wgu8lCPjErOs",
             authDomain: "h2optimize-3b6cd.firebaseapp.com",
             projectId: "h2optimize-3b6cd",
+            databaseURL: "https://h2optimize-3b6cd-default-rtdb.asia-southeast1.firebasedatabase.app",
             storageBucket: "h2optimize-3b6cd.appspot.com",
             messagingSenderId: "819813733292",
             appId: "1:819813733292:web:6cd66fa7704679a71ae009",
@@ -290,22 +291,18 @@
         auth.signInWithEmailAndPassword(email, password)
             .then((userCredential) => {
                 const user = userCredential.user;
-                console.log('Sign-in successful for:', user.email);
 
                 // Get the ID token
                 user.getIdToken().then((idToken) => {
-                    // Set the ID token in a cookie
                     document.cookie = `idToken=${idToken};path=/;max-age=3600`;
-
-                    // Redirect to home or category page
-                    window.location.href = '/users';
+                    console.log("ID Token: ", idToken);
+                    document.getElementById('signInForm').submit();
                 });
             })
             .catch((error) => {
                 displayPopup("Invalid Credentials: Enter email or password again");
             });
     }
-
 
         function redirectToHome() {
             window.location.href = "/users";

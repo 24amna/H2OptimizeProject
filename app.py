@@ -1,7 +1,4 @@
 import pickle
-from datetime import timedelta
-from flask import make_response, redirect, url_for
-from flask import Flask, render_template, request, redirect, jsonify
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
@@ -11,16 +8,13 @@ from flask import jsonify, make_response
 from flask import Flask, render_template, request, redirect, url_for, session
 import firebase_admin
 from firebase_admin import credentials, auth, db
-import pandas as pd
-import joblib
-import requests
-
-
+import matplotlib.pyplot as plt
+from datetime import timedelta
+import io
+import base64
 from classification import classify_water
 from homeUser import category_encoder, rf_model, method_name_encoder, predict_and_display_methods, data
 from industrialUser import category_Encoder, rf_Model, Method_name_encoder, predict_and_display_Methods, datai
-
-
 
 # Email
 EMAIL_ADDRESS = "h2optimizecommunity@gmail.com"
@@ -35,9 +29,9 @@ app.config['SESSION_COOKIE_NAME'] = 'session'
 
 
 # Initialize Firebase Admin SDK
-cred = credentials.Certificate('h2optimize-3b6cd-firebase-adminsdk-r5hdv-878af1aea2.json')
+cred = credentials.Certificate('h2optimize-3b6cd-firebase-adminsdk-r5hdv-ae812be9e2.json')
 firebase_admin.initialize_app(cred, {
-    'databaseURL': 'https://h2optimize-3b6cd-default-rtdb.asia-southeast1.firebasedatabase.app/'
+    'databaseURL': "https://h2optimize-3b6cd-default-rtdb.asia-southeast1.firebasedatabase.app",
 })
 
 # Load the trained models and label encoder
@@ -49,18 +43,18 @@ with open('classification_model.pkl', 'rb') as file:
 def before_request():
     print(f"Current session: {session}")
 
-
+#MAIN ROUTE
 @app.route('/')
 def home():
     return render_template('Sign-in.html')
 
 
-@app.route('/goToIndus')
+@app.route('/Indus')
 def goToIndus():
     return render_template('industrial.html')
 
 
-@app.route('/goToIndex')
+@app.route('/Index')
 def goToIndex():
     return render_template('index_t.html')
 
@@ -79,64 +73,26 @@ def goToguide():
 def goToAbout():
     return render_template('about.html')
 
-
-@app.route('/goToFav')
-def goToFav():
-    try:
-        id_token = request.cookies.get('idToken')
-        if not id_token:
-            return redirect(url_for('signin'))
-
-        decoded_token = auth.verify_id_token(id_token)
-        uid = decoded_token['uid']
-
-        # Fetch favorites from Firebase
-        favorites_ref = db.reference(f'users/{uid}/favorites')
-        favorites = favorites_ref.get()
-
-        favorites_list = []
-        if favorites:
-            favorites_list = [{'method_name': item['method_name'], 'description': item['description']} for item in
-                              favorites.values()]
-
-        return render_template('saved.html', favorites=favorites_list)
-    except Exception as e:
-        return str(e)
+@app.route('/indus')
+def indus():
+    return render_template('industrial.html')
 
 
-@app.route('/remove_favorite', methods=['POST'])
-def remove_favorite():
-    try:
-        # Authenticate user
-        id_token = request.cookies.get('idToken')
-        if not id_token:
-            return jsonify({'error': 'User not authenticated'}), 401
+@app.route('/profile')
+def profile():
+    return render_template('Profile.html')
 
-        decoded_token = auth.verify_id_token(id_token)
-        uid = decoded_token['uid']
-
-        # Extract data
-        method_name = request.json.get('method_name')
-        if not method_name:
-            return jsonify({'error': 'Invalid data: Missing method_name'}), 400
-
-        # Reference user's favorites
-        favorites_ref = db.reference(f'users/{uid}/favorites')
-        favorites = favorites_ref.get() or {}
-
-        # Find the key of the favorite to remove
-        favorite_key = next((key for key, value in favorites.items() if value.get('method_name') == method_name), None)
-
-        if favorite_key:
-            # Remove the favorite
-            favorites_ref.child(favorite_key).delete()
-            return jsonify({'message': 'Favorite removed successfully'}), 200
-        else:
-            return jsonify({'error': 'Favorite not found'}), 404
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
+@app.route('/category')
+def category():
+    print("route accessed")
+    return render_template('category_updated.html')
 
 
+@app.route('/index')
+def index():
+    return render_template('index_t.html')
+
+#SIGN-UP ROUTE
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     if request.method == 'POST':
@@ -149,11 +105,11 @@ def signup():
             user_ref.set({
                 'name': username,
                 'email': email,
-                'password': password,
+                'password': password
             })
             response = make_response(redirect(url_for('signin')))
-            response.set_cookie('name', username, max_age=timedelta(days=1))
-            response.set_cookie('email', email, max_age=timedelta(days=1))
+            response.set_cookie('name', username, max_age=timedelta(days=14))
+            response.set_cookie('email', email, max_age=timedelta(days=14))
 
             return response
 
@@ -162,72 +118,37 @@ def signup():
     return render_template('sign-up.html')
 
 
-# @app.route('/signin', methods=['GET', 'POST'])
-# def signin():
-#     if request.method == 'POST':
-#         email = request.form['email']
-#         password = request.form['password']
-#         try:
-#             id_token = request.cookies.get('idToken')
-#             if not id_token:
-#                 return 'No ID token provided', 400
-#
-#             # Verify the ID token
-#             decoded_token = auth.verify_id_token(id_token)
-#             uid = decoded_token['uid']
-#             print(f"User {uid} signed in successfully.")
-#
-#             user_ref = db.reference(f'users/{uid}')
-#             user_data = user_ref.get()
-#
-#             if user_data:
-#                 session['name'] = user_data.get('name')
-#                 session['email'] = user_data.get('email')
-#                 print(f"User {uid} signed in successfully. Name: {session['name']}")
-#
-#             return redirect(url_for('users'))
-#         except Exception as e:
-#             return str(e)
-#     return render_template('sign-in.html')
+#SIGN-IN ROUTE
 @app.route('/signin', methods=['GET', 'POST'])
 def signin():
     if request.method == 'POST':
-        email = request.form['email']
-        password = request.form['password']
         try:
             id_token = request.cookies.get('idToken')
-            if not id_token:
-                return 'No ID token provided', 400
+            print(f"Received id_token: {id_token}")
 
-            # Verify the ID token
-            decoded_token = auth.verify_id_token(id_token)
-            uid = decoded_token['uid']
-            print(f"User {uid} signed in successfully.")
-
-            user_ref = db.reference(f'users/{uid}')
-            user_data = user_ref.get()
-
-            if user_data:
-                response = make_response(redirect(url_for('users')))
-                response.set_cookie('name', user_data.get('name'), max_age=timedelta(days=1))
-                response.set_cookie('email', user_data.get('email'), max_age=timedelta(days=1))
-                print(f"User {uid} signed in successfully. Name: {user_data.get('name')}")
-                print(f"Cookies after setting: {request.cookies}")
-                return response
-            if user_data:
-                category = user_data.get('category')
-                if category == 'home':
-                    return redirect(url_for('goToIndex'))
-                elif category == 'industrial':
-                    return redirect(url_for('goToIndus'))
-                else:
-                    return redirect(url_for('users'))
-            
+            if id_token:
+                decoded_token = auth.verify_id_token(id_token)
+                uid = decoded_token.get('uid')
+                print(f"User UID from token: {uid}")
+                session['uid'] = uid
+                print(f"UID stored in session: {uid}")
+                user_ref = db.reference(f'users/{uid}')
+                user_data = user_ref.get()
+                if not user_data.get('userType'):
+                    return redirect('/users')
+                elif user_data['userType'] == "Home":
+                    return redirect('/index')
+                elif user_data['userType'] == "Industrial":
+                    return redirect('/indus')
+            else:
+                return "No ID token found. Please log in again.", 401
         except Exception as e:
-            return str(e)
-    return render_template('sign-in.html')
+            print(f"Error during sign-in: {e}")
+            return render_template('Sign-in.html', error="An error occurred. Please try again.")
 
+    return render_template('Sign-in.html')
 
+#SIGN-OUT ROUTE
 @app.route('/signout')
 def signout():
     response = make_response(redirect(url_for('signin')))
@@ -235,168 +156,89 @@ def signout():
     print("User signed out, cookie cleared.")
     return response
 
-
+#USER ROUTE
 @app.route('/users')
 def users():
+    return render_template('users.html')
+
+#SET USER TYPE
+@app.route('/set_user_type', methods=['POST'])
+def set_user_type():
     try:
-        id_token = request.cookies.get('idToken')
-        if not id_token:
-            return redirect(url_for('signin'))
-
-        decoded_token = auth.verify_id_token(id_token)
-        uid = decoded_token['uid']
-
-        # Check if the user's category is already set
-        user_ref = db.reference(f'users/{uid}')
-        user_data = user_ref.get()
-
-        if user_data:
-            category = user_data.get('category')
-            if category == 'home':
-                return redirect(url_for('goToIndex'))
-            elif category == 'industrial':
-                return redirect(url_for('goToIndus'))
-
-        return render_template('users.html')
-
-    except Exception as e:
-        print(f"Error in /users route: {str(e)}")
-        return "An error occurred. Please try again.", 500
-
-
-@app.route('/category')
-def category():
-    print("route accessed")
-    return render_template('category_updated.html')
-
-
-@app.route('/index')
-def index():
-    return render_template('index_t.html')
-
-
-@app.route('/set_category', methods=['POST'])
-def set_category():
-    try:
-        id_token = request.cookies.get('idToken')
-        if not id_token:
+        uid = session.get('uid')
+        if not uid:
             return jsonify({'error': 'User not authenticated'}), 401
 
-        decoded_token = auth.verify_id_token(id_token)
-        uid = decoded_token['uid']
-
-        # Parse request data
         data = request.json
-        category = data.get('category')
+        user_type = data.get('userType')
+        if user_type not in ['Home', 'Industrial']:
+            return jsonify({'error': 'Invalid user type'}), 400
 
-        if not category or category not in ['home', 'industrial']:
-            return jsonify({'error': 'Invalid category'}), 400
-
-        # Save category to the database
         user_ref = db.reference(f'users/{uid}')
-        user_data = user_ref.get()
+        user_ref.update({'userType': user_type})
 
-        # Allow setting the category only once
-        if not user_data.get('category'):
-            user_ref.update({'category': category})
-            return jsonify({'message': 'Category set successfully'}), 200
-        else:
-            return jsonify({'error': 'Category already set'}), 409
-
+        return jsonify({'message': 'User type set successfully'}), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
 
-@app.route('/get_user_category', methods=['GET'])
-def get_user_category():
-    try:
-        id_token = request.cookies.get('idToken')
-        if not id_token:
-            return jsonify({'error': 'User not authenticated'}), 401
-
-        decoded_token = auth.verify_id_token(id_token)
-        uid = decoded_token['uid']
-
-        user_ref = db.reference(f'users/{uid}')
-        user_data = user_ref.get()
-
-        return jsonify({'category': user_data.get('category', None)})
-
-    except Exception as e:
-        print(f"Error in get_user_category: {str(e)}")
-        return jsonify({'error': 'An error occurred'}), 500
-
-
-@app.route('/get_name', methods=['GET'])
-def get_name():
-    try:
-        # Retrieve ID token from cookies
-        id_token = request.cookies.get('idToken')
-        if not id_token:
-            print("ID token is missing.")
-            return jsonify({'error': 'User not authenticated'}), 401
-
-        # Decode the token to get user ID
-        decoded_token = auth.verify_id_token(id_token)
-        uid = decoded_token.get('uid')
-        if not uid:
-            print("Invalid token or UID is missing.")
-            return jsonify({'error': 'Invalid token or UID missing.'}), 400
-
-        print(f"UID retrieved: {uid}")
-
-        # Fetch user data from Firebase
-        user_ref = db.reference(f'users/{uid}')
-        user_data = user_ref.get()
-
-        if not user_data:
-            print("User data not found in Firebase.")
-            return jsonify({'error': 'User data not found.'}), 404
-
-        # Fetch the username
-        username = user_data.get('name')
-        if username:
-            # Store username in session
-            session['username'] = username
-            print(f"Username retrieved: {username}")
-            return jsonify({'username': username}), 200
-        else:
-            print("Username not available in user data.")
-            return jsonify({'error': 'Username not available.'}), 404
-
-    except Exception as e:
-        print(f"Error in get_name route: {str(e)}")
-        return jsonify({'error': 'An unexpected error occurred.'}), 500
-
-
-@app.route('/indus')
-def indus():
-    return render_template('industrial.html')
-
-
-@app.route('/profile')
-def profile():
-    return render_template('Profile.html')
-
-
+#Classification of water data and display og Graph
 @app.route('/classify', methods=['POST'])
 def classify():
     if request.method == 'POST':
         try:
-            # Get form input values
+            uid = session.get('uid')
             ph = float(request.form['ph'])
-            solids = float(request.form['tds'])  
+            solids = float(request.form['tds'])
             turbidity = float(request.form['turbidity'])
+            print(f"Received Form Data - PH: {ph}, TDS: {solids}, Turbidity: {turbidity}")
 
+            # Classify water
             classification_result = classify_water(ph, solids, turbidity)
+            print(f"Classification Result: {classification_result}")
+            print(f"Session UID: {uid}")
+            user_ref = db.reference(f'users/{uid}')
+            user_data = user_ref.get()
 
-            return render_template('category_updated.html', dt_result=classification_result, submitted=True)
+            if not user_data:
+                return jsonify({'error': 'User data not found'}), 404
+
+            category_data = user_data.get('category', [])
+            if not category_data:
+                print("No category data found; initializing as an empty list.")
+                category_data = []
+            category_data.append(classification_result)
+            user_ref.update({'category': category_data})
+
+            # Generate graph
+            category_count = {}
+            for cat in category_data:
+                category_count[cat] = category_count.get(cat, 0) + 1
+
+            category_names = list(category_count.keys())
+            counts = list(category_count.values())
+
+            plt.figure(figsize=(8, 6))
+            plt.bar(category_names, counts, color='skyblue')
+            plt.xlabel('Water Categories')
+            plt.ylabel('Frequency')
+            plt.title('Frequency of Water Classifications')
+            plt.tight_layout()
+
+            # graph as base64
+            img = io.BytesIO()
+            plt.savefig(img, format='png')
+            img.seek(0)
+            graph_url = base64.b64encode(img.getvalue()).decode()
+            print("Graph URL:", graph_url)
+            print("Graph successfully generated and encoded!")
+            return render_template('category_updated.html',dt_result=classification_result,graph_url=graph_url,submitted=True)
 
         except Exception as e:
-            # Handle any error during classification and show an error message on the page
-            return render_template('category_updated.html', error=str(e), submitted=False)
+            print(f"Error during classification: {e}")
+            return render_template('category_updated.html', error="An error occurred. Please try again.", submitted=False)
 
-    return render_template('category_updated.html')
+    return render_template('category_updated.html', error="Invalid request method.", submitted=False)
 
 
 @app.route('/recommend', methods=['POST'])
@@ -481,6 +323,108 @@ def details():
         print(f"Error in details route: {str(e)}")
         return render_template('error.html', message="An unexpected error occurred."), 500
 
+
+#GETTING USERS NAME FOR COMMENTS
+@app.route('/get_name', methods=['GET'])
+def get_name():
+    try:
+        # Retrieve ID token from cookies
+        id_token = request.cookies.get('idToken')
+        if not id_token:
+            print("ID token is missing.")
+            return jsonify({'error': 'User not authenticated'}), 401
+
+        # Decode the token to get user ID
+        decoded_token = auth.verify_id_token(id_token)
+        uid = decoded_token.get('uid')
+        if not uid:
+            print("Invalid token or UID is missing.")
+            return jsonify({'error': 'Invalid token or UID missing.'}), 400
+
+        print(f"UID retrieved: {uid}")
+
+        # Fetch user data from Firebase
+        user_ref = db.reference(f'users/{uid}')
+        user_data = user_ref.get()
+
+        if not user_data:
+            print("User data not found in Firebase.")
+            return jsonify({'error': 'User data not found.'}), 404
+
+        # Fetch the username
+        username = user_data.get('name')
+        if username:
+            # Store username in session
+            session['username'] = username
+            print(f"Username retrieved: {username}")
+            return jsonify({'username': username}), 200
+        else:
+            print("Username not available in user data.")
+            return jsonify({'error': 'Username not available.'}), 404
+
+    except Exception as e:
+        print(f"Error in get_name route: {str(e)}")
+        return jsonify({'error': 'An unexpected error occurred.'}), 500
+
+
+
+@app.route('/goToFav')
+def goToFav():
+    try:
+        id_token = request.cookies.get('idToken')
+        if not id_token:
+            return redirect(url_for('signin'))
+
+        decoded_token = auth.verify_id_token(id_token)
+        uid = decoded_token['uid']
+
+        # Fetch favorites from Firebase
+        favorites_ref = db.reference(f'users/{uid}/favorites')
+        favorites = favorites_ref.get()
+
+        favorites_list = []
+        if favorites:
+            favorites_list = [{'method_name': item['method_name'], 'description': item['description']} for item in
+                              favorites.values()]
+
+        return render_template('saved.html', favorites=favorites_list)
+    except Exception as e:
+        return str(e)
+
+
+@app.route('/remove_favorite', methods=['POST'])
+def remove_favorite():
+    try:
+        # Authenticate user
+        id_token = request.cookies.get('idToken')
+        if not id_token:
+            return jsonify({'error': 'User not authenticated'}), 401
+
+        decoded_token = auth.verify_id_token(id_token)
+        uid = decoded_token['uid']
+
+        # Extract data
+        method_name = request.json.get('method_name')
+        if not method_name:
+            return jsonify({'error': 'Invalid data: Missing method_name'}), 400
+
+        # Reference user's favorites
+        favorites_ref = db.reference(f'users/{uid}/favorites')
+        favorites = favorites_ref.get() or {}
+
+        # Find the key of the favorite to remove
+        favorite_key = next((key for key, value in favorites.items() if value.get('method_name') == method_name), None)
+
+        if favorite_key:
+            # Remove the favorite
+            favorites_ref.child(favorite_key).delete()
+            return jsonify({'message': 'Favorite removed successfully'}), 200
+        else:
+            return jsonify({'error': 'Favorite not found'}), 404
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+#----------------------------------------------INDUSTRIAL USER ROUTES---------------------------------------------
 
 @app.route('/classifyIndustrial', methods=['POST'])
 def classifyIndustrial():
@@ -676,7 +620,6 @@ def send_email(to_email, subject, body):
 def subscribe():
     email = request.form.get('email')
     if email:
-        # Save email to Firebase
         subscribers_ref = db.reference('subscribers')
         subscribers_ref.push({"email": email})
 
@@ -686,11 +629,8 @@ def subscribe():
 
 def send_weekly_emails():
     try:
-        # Fetch subscribers from Firebase
         subscribers_ref = db.reference('subscribers')
         subscribers = subscribers_ref.get()
-
-        # Fetch reminder emails from Firebase
         reminders_ref = db.reference('reminder_emails')
         reminder_emails = reminders_ref.get()
 
@@ -701,7 +641,6 @@ def send_weekly_emails():
         for subscriber in subscribers.values():
             email = subscriber.get('email')
             if email:
-                # Select a random reminder email
                 reminder = random.choice(list(reminder_emails.values()))
                 send_email(email, reminder['subject'], reminder['body'])
 
@@ -710,7 +649,7 @@ def send_weekly_emails():
 
 
 # emails (Monday at 9 AM)
-scheduler.add_job(send_weekly_emails, 'cron', day_of_week='mon', hour=9)
+scheduler.add_job(send_weekly_emails, 'cron', day_of_week='mon', hour=11)
 
 
 if __name__ == '__main__':

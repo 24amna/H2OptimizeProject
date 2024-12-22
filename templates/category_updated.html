@@ -8,7 +8,7 @@
   </title>
   <meta content="" name="description"/>
   <meta content="width=device-width, initial-scale=1" name="viewport"/>
-  <link rel="icon" type="image/png" href="static/images/logo-removebg.png">
+  <link rel="icon" type="image/png" href="static/images/logoDrop-rb.png">
   <!-- Place favicon.ico in the root directory -->
   <!-- ========================= CSS here ========================= -->
   <link href="static/assets/css/bootstrap-5.0.5-alpha.min.css" rel="stylesheet"/>
@@ -186,7 +186,6 @@
             margin-top: 30px;
         }
 
-
 @media (max-width: 768px) {
     .navbar {
         height: auto;
@@ -353,7 +352,7 @@
          </br>
         </p>
        </div>
-       <form action="/classify" class="form" method="post">
+       <form action="/classify" class="form" method="post" name="submitted" value="true">
         <div class="input-row">
          <div class="input-column">
           <label for="ph">
@@ -375,7 +374,7 @@
          </div>
         </div>
         <input name="submitted" type="hidden" value="true"/>
-        <button class="btn theme-btn page-scroll" data-animation="fadeInUp" data-delay=".9s" data-duration="1.5s" href="" style="margin-left:22px; margin-top:30px; width:200px; height:60px; border-radius:5px;">
+        <button class="btn theme-btn page-scroll" data-animation="fadeInUp" data-delay=".9s" data-duration="1.5s" style="margin-left:22px; margin-top:30px; width:200px; height:60px; border-radius:5px;">
          Proceed
         </button>
        </form>
@@ -390,71 +389,72 @@
    <br/>
    <br/>
    <!--========================= category-section start ========================= -->
-   {% if submitted %}
-   <section class="service-section pt-150" id="services">
+{% if submitted %}
+<section style="margin-top:-50px;" class="service-section pt-150" id="services">
     <div class="shape shape-3">
-     <img alt="" src="static/assets/img/shapes/shape-3.svg"/>
+        <img alt="" src="static/assets/img/shapes/shape-3.svg"/>
     </div>
     <div class="container">
-     <div class="row">
-      <div class="col-xl-8 mx-auto">
-       <div class="section-title text-center mb-55">
-        <span class="wow fadeInDown" data-wow-delay=".2s">
-         Category
-        </span>
-        <h2 class="mb-15 wow fadeInUp" data-wow-delay=".4s">
-         Predicted Category for You
-        </h2>
-        <p class="wow fadeInUp" data-wow-delay=".6s">
-         Save water, save life. Every drop counts
-         <br class="d-none d-lg-block">
-         </br>
-        </p>
-       </div>
-      </div>
-     </div>
-     <div style="width:1500px;" class="row">
-      <div class="col-lg-4 col-md-6">
-       <div class="service-item mb-30">
-        <div class="service-icon mb-25">
-         <img alt="Water Icon" src="static/assets/img/bg/category.png" style="width: 70.285px; height: 58.102px;"/>
+        <div class="row">
+            <div class="col-xl-8 mx-auto">
+                <div class="section-title text-center mb-55">
+                    <span class="wow fadeInDown" data-wow-delay=".2s">Category</span>
+                    <h2 class="mb-15 wow fadeInUp" data-wow-delay=".4s">Predicted Category for You</h2>
+                    <p class="wow fadeInUp" data-wow-delay=".6s">
+                        Save water, save life. Every drop counts
+                    </p>
+                </div>
+            </div>
         </div>
-        <div class="service-content">
-         <div class="mainCardTwo" id="mainCardTwo">
-
-           <input name="dt_result" type="hidden" value="{{ dt_result }}"/>
-          <div class="card-content">
-           <h4>
-            Predicted Category
-           </h4>
-           <h2 id="category-result">
-            {{ dt_result }}
-           </h2>
-          </div>
-         </div>
-         <br>
-         <form action="/recommend" class="form" method="post">
-          <input name="dt_result" type="hidden" value="{{ dt_result }}"/>
-         <button style="border:none;" type="submit" class="read-more"  onclick="gotodetails()">
-          Get Recommendations
-          <i class="lni lni-arrow-right">
-          </i>
-         </button>
-         </form>
+     <div style="display:flex; flex-direction:row;">
+        <div style="width:1600px;" class="row">
+            <div class="col-lg-4 col-md-6">
+                <div class="service-item mb-30">
+                    <div class="service-icon mb-25">
+                        <img alt="Water Icon" src="static/assets/img/bg/category.png" style="width: 70.285px; height: 58.102px;"/>
+                    </div>
+                    <div class="service-content">
+                        <div class="mainCardTwo" id="mainCardTwo">
+                            <input name="dt_result" type="hidden" value="{{ dt_result }}"/>
+                            <div class="card-content">
+                                <h4>Predicted Category</h4>
+                                <h2 id="category-result">{{ dt_result }}</h2>
+                            </div>
+                        </div>
+                        <br>
+                        <form action="/recommend" class="form" method="post">
+                            <input name="dt_result" type="hidden" value="{{ dt_result }}"/>
+                            <button style="border:none;" type="submit" class="read-more" onclick="gotodetails()">
+                                Get Recommendations
+                                <i class="lni lni-arrow-right"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="service-overlay img-bg">
-        </div>
-       </div>
-      </div>
+     <div style="width:2000px; margin-left:-600px;" class="row">
+            <div class="col-lg-4 col-md-6">
+                <div class="service-item mb-30">
+                      <div class="service-content">
+                        <div class="mainCardTwo">
+                            <h5>Previous Water Classification Graph</h5>
+                            <img src="data:image/png;base64,{{ graph_url }}" alt="Graph">
+                        </div>
+                        <div class="service-overlay img-bg"></div>
+                      </div>
+                </div>
+            </div>
      </div>
     </div>
-   </section>
-   <script>
-    // Scrolling to the card automatically
-        document.getElementById('mainCardTwo').scrollIntoView({ behavior: 'smooth' });
-   </script>
-   {% endif %}
-   <!--=========================Category-end ==============================-->
+     </div>
+</section>
+<script>
+    document.getElementById('mainCardTwo').scrollIntoView({ behavior: 'smooth' });
+</script>
+{% endif %}
+<!--=========================Category-end ==============================-->
+
    <!--========================= service-section end ========================= -->
    <!-- ========================= footer start ========================= -->
    <footer class="footer pt-100 img-bg" style="background-image:url('static/assets/img/bg/footer-bg.jpg');">
@@ -639,5 +639,57 @@
     });
 });
   </script>
+ <!-- Firebase SDK Scripts -->
+<script src="https://www.gstatic.com/firebasejs/9.9.3/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.9.3/firebase-database.js"></script>
+<script>
+  // Your Firebase config (replace with your actual config)
+  const firebaseConfig = {
+  apiKey: "AIzaSyAJuqq_PNBiWO9BctboH_-wgu8lCPjErOs",
+  authDomain: "h2optimize-3b6cd.firebaseapp.com",
+  databaseURL: "https://h2optimize-3b6cd-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "h2optimize-3b6cd",
+  storageBucket: "h2optimize-3b6cd.firebasestorage.app",
+  messagingSenderId: "819813733292",
+  appId: "1:819813733292:web:6cd66fa7704679a71ae009",
+  measurementId: "G-YK72N2GMMF"
+};
+
+  // Initialize Firebase
+  const app = firebase.initializeApp(firebaseConfig);
+  const database = firebase.database(app);
+</script>
+<script>
+  // Assuming Firebase has been initialized as shown before
+
+  // Wait for the DOM to load
+<!--  window.onload = function() {-->
+<!--    // Get the predicted category from the backend result-->
+<!--    const category = "{{ dt_result }}";-->
+
+<!--    // Ensure category exists before storing-->
+<!--    if (category) {-->
+<!--      // Get the user UID from the session (you can pass this from the backend as well)-->
+<!--      const user_uid = "{{ session['uid'] }}";-->
+
+<!--      // Ensure user is logged in-->
+<!--      if (user_uid) {-->
+<!--        // Reference to the categories node in Firebase for this user-->
+<!--        const userCategoriesRef = firebase.database().ref('users/' + user_uid + '/categories');-->
+
+<!--        // Push the category to Firebase-->
+<!--        userCategoriesRef.push(category)-->
+<!--          .then(() => {-->
+<!--            console.log('Category saved successfully!');-->
+<!--          })-->
+<!--          .catch(error => {-->
+<!--            console.error('Error storing category: ' + error.message);-->
+<!--          });-->
+<!--      } else {-->
+<!--        console.error('User not logged in');-->
+<!--      }-->
+<!--    }-->
+<!--  };-->
+</script>
  </body>
 </html>

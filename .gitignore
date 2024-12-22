@@ -3,10 +3,10 @@ __pycache__/
 *.pyc
 
 # Ignore sensitive files
-h2optimize-firebase-adminsdk.json
+h2optimize-firebase-adminsdk1.json
 
 #ignore this
-h2optimize-3b6cd-firebase-adminsdk-r5hdv-878af1aea2.json
+h2optimize-firebase-adminsdk.json
 # Ignore virtual environment
 venv/
 
