@@ -426,7 +426,9 @@
            <button
              class="heartIcon"
              style="background: none; border: none; padding: 0;"
-             onclick="toggleFavorite('{{ method_name }}', '{{ description }}', this)">
+             onclick="toggleFavorite('{{ method_name }}', '{{ description }}', this)"
+             data-method-name="{{ method_name }}"
+             data-description="{{ description }}">
              <img onclick="toggleFavorite('{{ method_name }}', '{{ description }}', this)" src="static/assets/img/bg/heart.png" alt="Heart Icon" style="width: 100%; height: auto;">
            </button>
            <p onclick="toggleFavorite('{{ method_name }}', '{{ description }}', this)" style="margin-top: 5px; margin-right:2px; cursor: pointer;">Save</p>
@@ -450,15 +452,23 @@
         <textarea id="commentInput-{{ method_name }}" placeholder="Write your comment here..." rows="3" style="width: 100%;"></textarea>
         <button class="btn btn-primary" onclick="submitComment('{{ method_name }}')">Submit Comment</button>
     </div>
-    <!-- ========================= Comment Section Modal ================= -->
+
 
     <!-- ============== Comments Display Section ========================= -->
 
     <div id="comments-{{ method_name }}" class="comments-section" style="margin-top: 20px;">
-
-        <!-- Comments load here -->
+    {% if comments %}
+        {% for comment_id, comment_data in comments.items() %}
+            <div class="comment">
+                <strong>{{ comment_data.username }}:</strong>
+                <p>{{ comment_data.comment }}</p>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>No comments yet. Be the first to comment!</p>
+    {% endif %}
     </div>
-    <!-- ============== Comments Display Section ========================= -->
+
 
        <div id="recommendation-details"></div>
       <!-- ========================= footer start ========================= -->
@@ -638,65 +648,42 @@
    <script>
 
         function toggleFavorite(methodName, description, buttonElement) {
-              const imgElement = buttonElement.querySelector('img');
-              const textElement = buttonElement.nextElementSibling;
+             const imgElement = buttonElement.querySelector('img');
+             const textElement = buttonElement.nextElementSibling;
 
-              // Determine if the item is being added or removed
-              const isSaving = imgElement.src.includes('heart.png');
+             const isSaving = imgElement.src.includes('heart.png');
+             const route = isSaving ? '/save_favorite' : '/remove_favorite';
+             const data = { method_name: methodName, ...(isSaving && { description }) }; // Include description only when saving
 
-              if (isSaving) {
-                  // Save to favorites
-                  const data = {
-                      method_name: methodName,
-                      description: description
-                  };
+             console.log("Toggle Favorite Action:", isSaving ? "Save" : "Remove", data);
 
-                  console.log("Saving favorite:", data);  // Log the data being sent
+             fetch(route, {
+                 method: 'POST',
+                 headers: { 'Content-Type': 'application/json' },
+                 body: JSON.stringify(data),
+             })
+                 .then((response) => response.json())
+                 .then((data) => {
+                     if (data.message) {
+                         console.log(data.message);
+                         displayPopup(data.message);
 
-                  fetch('/save_favorite', {
-                      method: 'POST',
-                      headers: { 'Content-Type': 'application/json' },
-                      body: JSON.stringify(data),
-                  })
-                  .then((response) => response.json())
-                  .then((data) => {
-                      if (data.message) {
-                          displayPopup(data.message);  // Show success message
-                          console.log('Favorite saved:', data.message);
-                      } else {
-                          displayPopup('An error occurred while saving the favorite.');
-                      }
+                         // Update UI elements
+                         imgElement.src = isSaving
+                             ? 'static/assets/img/bg/heartfill.png'
+                             : 'static/assets/img/bg/heart.png';
+                         textElement.textContent = isSaving ? 'Saved' : 'Save';
+                     } else {
+                         console.error("Error:", data.error);
+                         displayPopup(data.error || 'An unknown error occurred.');
+                     }
+                 })
+                 .catch((error) => {
+                     console.error("Network Error:", error);
+                     displayPopup('A network error occurred. Please try again.');
+                 });
+         }
 
-                      // Update heart icon and text
-                      imgElement.src = 'static/assets/img/bg/heartfill.png';
-                      textElement.textContent = 'Saved';
-                  })
-                  .catch((error) => {
-                      console.error('Error saving favorite:', error);
-                      displayPopup('An error occurred while saving the favorite.');
-                  });
-              } else {
-                  // Remove from favorites
-                  const data = { method_name: methodName };
-
-                  fetch('/remove_favorite', {
-                      method: 'POST',
-                      headers: { 'Content-Type': 'application/json' },
-                      body: JSON.stringify(data),
-                  })
-                  .then(() => {
-                      // Update heart icon and text
-                      imgElement.src = 'static/assets/img/bg/heart.png';
-                      textElement.textContent = 'Save';
-
-                      displayPopup('Favorite removed.');
-                  })
-                  .catch((error) => {
-                      console.error('Error removing favorite:', error);
-                      displayPopup('An error occurred while removing the favorite.');
-                  });
-              }
-          }
 
           function displayPopup(message) {
               const popup = document.createElement('div');
@@ -740,47 +727,39 @@
             }
         }
 
-        // Submit a comment (updated)
-        function submitComment(methodName) {
+                // Submit a comment (updated)
+                function submitComment(methodName) {
             const commentInput = document.getElementById(`commentInput-${methodName}`);
             const comment = commentInput.value.trim();
 
             if (comment) {
-                const commentId = new Date().toISOString(); // Use a unique timestamp as the comment ID
-
-                const payload = JSON.stringify({ comment: comment });  // Only send the comment, without username
-
-                const url = `https://h2optimize-3b6cd-default-rtdb.asia-southeast1.firebasedatabase.app/Comments/${methodName}/${commentId}.json`;
-
-                console.log("Submitting comment to:", url); // Log the request URL
-                console.log("Payload:", payload);           // Log the payload being sent
-
-                fetch(url, {
-                    method: 'PUT',
+                fetch('/submit_comment', {
+                    method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: payload,
+                    body: JSON.stringify({ method_name: methodName, comment: comment }),
                 })
-                .then(response => {
-                    console.log("Response Status:", response.status); // Log the response status
-                    return response.json().then(data => {
-                        if (response.ok) {
-                            console.log("Comment submitted successfully:", data);
+                    .then((response) => response.json())
+                    .then((data) => {
+                        if (data.message) {
+                            // Dynamically add the comment
+                            const commentsDiv = document.getElementById(`comments-${methodName}`);
+                            const commentElement = document.createElement('div');
+                            commentElement.className = 'comment';
+                            commentElement.innerHTML = `<strong>${data.username}:</strong> <p>${comment}</p>`;
+                            commentsDiv.appendChild(commentElement);
+
                             commentInput.value = ''; // Clear the input field
-                            fetchComments(methodName); // Refresh comments
                         } else {
-                            console.error("Error response from server:", data);
-                            alert('Error submitting comment: ' + (data.error || 'Unknown error.'));
+                            alert(data.error || 'Error submitting comment.');
                         }
-                    });
-                })
-                .catch(error => {
-                    console.error("Network or server error:", error);
-                    alert('Error submitting comment. Please check your network connection.');
-                });
+                    })
+                    .catch(() => alert('Error submitting comment.'));
             } else {
                 alert('Please write a comment before submitting.');
             }
         }
+
+
 
         // Fetch comments (updated)
         function fetchComments(methodName) {
@@ -816,11 +795,11 @@
         }
     </script>
     <script>
-    // Store the idToken passed from Flask into a JavaScript variable
-    const idToken = "{{ id_token }}";  // This is injected from Flask
-    console.log('Received idToken:', idToken);  // Optional: Check if the token is passed correctly
-
-    // You can now use this idToken in your API requests to Firebase
+        $(document).ready(function() {
+            $.get('/get_name', function(data) {
+                // Do nothing with the response
+            });
+        });
     </script>
 
 
